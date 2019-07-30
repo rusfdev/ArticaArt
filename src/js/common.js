@@ -18,6 +18,7 @@ $document.ready(function() {
   nav();
   barba();
   categories();
+  niceScroll();
 });
 
 window.addEventListener('load', 
@@ -72,6 +73,17 @@ function lazy() {
     threshold: 0,
     imageBase: false,
     defaultImage: false
+  });
+}
+function niceScroll() {
+  $('.page-block').niceScroll({
+    cursorcolor: '#000',
+    cursorwidth: '5px',
+    cursorborder: '0',
+    cursorborderradius: '0',
+    zindex: 1000,
+    bouncescroll: false,
+    autohidemode: "leave",
   });
 }
 

@@ -6,6 +6,8 @@ $border-color: #E5E5E5;
 .stretched {
   overflow: hidden;
   height: 100%;
+  width: 100%;
+  position: fixed;
   body {
     overflow: hidden;
     height: 100%;
@@ -38,6 +40,7 @@ body {
   position: relative;
   z-index: 2;
   overflow: hidden;
+  min-height: 450px;
 }
 .hidden {
   visibility: hidden !important;
@@ -51,29 +54,34 @@ body {
   .page-block {
     padding: 80px 0 50px 0;
   }
+  .container {
+    min-height: 370px;
+  }
 }
 @media screen and(max-width:1024px) {
   .container {
-    padding: 0 30px;
+    padding: 0 20px;
   }
   .page-block {
     padding: 70px 0 40px 0;
   }
 }
+@media screen and(max-width:768px) {
+  .container {
+    min-height: 490px;
+  }
+}
 @media screen and(max-width:576px) {
   .container {
     padding: 0 20px;
+    min-height: 390px;
   }
 }
+//height
 @media screen and(max-height:375px) {
   .preloader__image {
     width: 120px;
     height: 120px;
-  }
-}
-@media screen and(max-height:460px) {
-  .stretched {
-    min-height: 460px;
   }
 }
 

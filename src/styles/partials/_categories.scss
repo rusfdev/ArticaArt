@@ -111,12 +111,15 @@
 @media screen and(max-width:576px) {
   .categories-block {
     font-size: 11px;
+    &__container {
+      border: 1px solid $border-color;
+    }
     &__sub-title {
       letter-spacing: .15em;
       margin-left: .075em;
       padding: 0 10px 0.15em 10px;
       line-height: 0.7em;
-      margin-top: -0.4em;
+      margin-top: -0.45em;
       .word {
         padding: 0 0.15em;
       }

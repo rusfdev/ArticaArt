@@ -114,7 +114,8 @@
   position: fixed;
   z-index: 100;
   right: 20px;
-  top: 50%;
+  margin-top: 15px;
+  top: calc(50%);
   transform: translateY(-50%);
   &__list {
     display: block;
@@ -130,20 +131,20 @@
   }
   &__link {
     display: block;
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     position: relative;
     .loader {
       position: absolute;
       z-index: 1;
-      top: 6px;
-      left: 6px;
+      top: 5px;
+      left: 5px;
       display: block;
       width: 18px;
       height: 18px;
       transition: 0.2s;
-      transform: scale(0);
-      opacity: 0;
+      //transform: scale(0);
+      //opacity: 0;
       &:before {
         content: '';
         display: block;
@@ -155,10 +156,13 @@
         border-top-color: #5f5f5f;
         border-right-color: #5f5f5f;
         box-sizing: border-box;
-        animation: rotation 1s linear infinite;
+        animation-name: rotationAnimation;
+        animation-duration: 1s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
       }
     }
-    @keyframes rotation {
+    @keyframes rotationAnimation {
       0% {
         transform: rotate(0);
       }
@@ -171,10 +175,10 @@
       z-index: 2;
       width: 8px;
       height: 8px;
-      top: 11px;
-      left: 11px;
+      top: 10px;
+      left: 10px;
       border-radius: 10px;
-      background-color: #dbdbdb;
+      background-color: $border-color;
       display: block;
       transition: background-color 0.2s;
     }
@@ -214,35 +218,32 @@
 }
 @media screen and(max-width:1024px) {
   .pagination {
-    right: 0;
+    bottom: 6px;
+    top: auto;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
+    &__list {
+      display: flex;
+    }
+    &__item {
+      margin: 0 !important;
+    }
   }
   .nav-btn {
-    right: 20px;
+    right: 10px;
     top: 10px;
   }
   .logo {
     top: 23.5px;
-    left: 30px;
+    left: 20px;
     &__link {
       font-size: 7.35px;
     }
   }
 }
 @media screen and(max-width:576px) {
-  .pagination {
-    &__link {
-      width: 20px;
-      height: 20px;
-      .dot {
-        top: 5.5px;
-        left: 5.5px;
-      }
-      .loader {
-        top: 1px;
-        left: 1px;
-      }
-    }
-  }
   .nav-btn {
     right: 10px;
   }
