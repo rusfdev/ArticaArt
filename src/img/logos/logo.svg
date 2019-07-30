@@ -1,0 +1,18 @@
+<svg width="0" height="0" class="hidden">
+  <symbol viewBox="0 0 38 32" stroke="none" xmlns="http://www.w3.org/2000/svg" id="item1">
+    <path d="M18.794 7.355l14.404 24.137h4.39L18.793 0 0 31.492h4.39L18.793 7.355z" fill="#000"></path>
+  </symbol>
+  <symbol viewBox="0 0 21 22" stroke="none" xmlns="http://www.w3.org/2000/svg" id="item2">
+    <path d="M14.949 12.392c2.665-.572 4.68-2.96 4.68-5.797 0-3.26-2.66-5.928-5.912-5.928H.54L2.472 3.82h11.317c1.516 0 2.757 1.267 2.757 2.816s-1.24 2.816-2.757 2.816h-2.585v3.173l5.262 8.867h3.884l-5.401-9.1z" fill="#000"></path>
+  </symbol>
+  <symbol viewBox="0 0 20 22" stroke="none" xmlns="http://www.w3.org/2000/svg" id="item3">
+    <path d="M19.73.667H.937v3.307h7.538v17.518h3.717V3.974h7.538V.667z" fill="#000"></path>
+  </symbol>
+  <symbol viewBox="0 0 5 22" stroke="none" xmlns="http://www.w3.org/2000/svg" id="item4">
+    <path d="M4.397.667H.84V22h3.556V.667z" fill="#000"></path>
+  </symbol>
+  <symbol viewBox="0 0 20 22" stroke="none" xmlns="http://www.w3.org/2000/svg" id="item5">
+    <path d="M17.046 16.608a7.857 7.857 0 0 1-5.593 2.314c-4.3 0-7.787-3.398-7.787-7.589 0-4.19 3.487-7.588 7.787-7.588 2.196 0 4.177.888 5.593 2.314l2.763-1.603a11.028 11.028 0 0 0-8.356-3.79C5.408.667.508 5.443.508 11.334S5.408 22 11.453 22c3.354 0 6.35-1.474 8.356-3.79l-2.763-1.602z"
+      fill="#000"></path>
+  </symbol>
+</svg>

@@ -9,6 +9,11 @@ module.exports = function() {
         .pipe($.gulp.dest("./dest/"))
         .on("end", $.browsersync.reload);
   });
+  $.gulp.task("video", function() {
+    return $.gulp.src("./src/videos/*")
+        .pipe($.gulp.dest("./dest/videos/"))
+        .on("end", $.browsersync.reload);
+  });
   $.gulp.task("fonts", function() {
     return $.gulp.src("./src/fonts/**/*")
         .pipe($.gulp.dest("./dest/fonts/"))

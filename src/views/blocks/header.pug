@@ -1,0 +1,58 @@
+header.header
+  .container
+    .header__container
+      .header__section
+        a(href="#").mobile-button
+          span
+        .logo
+          a(href="#").logo__link
+            img(src="img/logos/logo.svg", alt="").logo__image
+        .socials
+          ul.socials__list
+            li.socials__item
+              a(href="#").socials__link.socials__link_facebook
+            li.socials__item
+              a(href="#").socials__link.socials__link_vk
+            li.socials__item
+              a(href="#").socials__link.socials__link_instagram
+        include nav
+      .header__section
+        .contact-block
+          .contact-block__content
+            span.contact-block__title Ростов-на-Дону
+            a(href="tel:+79034021952") +7 903 402 1952
+        .contact-block
+          .contact-block__content
+            span.contact-block__title Москва
+            a(href="tel:+79680980408") +7 968 098 0408
+        .contact-block.contact-block__button
+          .contact-block__content
+            span.contact-block__title Заказать <br>звонок
+        .contacts-modal
+          .contacts-modal__container
+            button.contacts-modal__close
+            form.contacts-modal__form(action="")
+              .contacts-modal__form-group
+                input(type="text" placeholder="Ваше имя" required).contacts-modal__form-input
+              .contacts-modal__form-group
+                input(type="tel" id='mask' placeholder="+7" required).contacts-modal__form-input
+              .contacts-modal__form-group
+                span.contacts-modal__form-group-title В какое время вам позвонить?
+                .contacts-modal__form-content
+                  label.contacts-modal__form-checkbox
+                    input(type="radio" name="time" checked)
+                    span В любое
+                  label.contacts-modal__form-checkbox
+                    input(type="radio" name="time")
+                    span 9–13
+                  label.contacts-modal__form-checkbox
+                    input(type="radio" name="time")
+                    span 13–18
+                  label.contacts-modal__form-checkbox
+                    input(type="radio" name="time")
+                    span 18–21
+              button(type='submit').contacts-modal__form-button Заказать звонок
+      span.overlay
+        
+        
+          

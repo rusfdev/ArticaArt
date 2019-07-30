@@ -9,8 +9,7 @@
 	}
 }
 
-@include font-face("Manrope", "../fonts/manrope-regular");
-@include font-face("Manrope", "../fonts/manrope-semibold", 500);
-@include font-face("Manrope", "../fonts/manrope-bold", 700);
+@include font-face("SFProText", "../fonts/SFPro/SF-Pro-Text-Regular");
+@include font-face("SFProText", "../fonts/SFPro/SF-Pro-Text-Bold", 700);
 
 

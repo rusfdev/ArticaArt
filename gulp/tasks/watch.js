@@ -7,6 +7,7 @@ module.exports = function() {
             $.watch("./src/img/**/*.svg", $.gulp.series("svg"));
             $.watch("./src/fonts/**/*", $.gulp.series("fonts"));
             $.watch("./src/*.php", $.gulp.series("php"));
+            $.watch("./src/video/*", $.gulp.series("video"));
             $.watch("./src/js/**/*.js", $.gulp.series("scripts"));
             $.watch("./src/libs/**/*", $.gulp.series("libs"));
             res();
