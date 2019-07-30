@@ -143,8 +143,8 @@
       width: 18px;
       height: 18px;
       transition: 0.2s;
-      //transform: scale(0);
-      //opacity: 0;
+      transform: scale(0);
+      opacity: 0;
       &:before {
         content: '';
         display: block;
