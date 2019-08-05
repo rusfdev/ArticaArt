@@ -2,8 +2,9 @@ extends layout/artica
 
 block content
   main.main#barba-wrapper
-    .barba-container#main(data-order='1')
+    .barba-container#main
       .page-block.main-page
         .video-wrapper(data-path='videos/optimazed.mp4')
-        .main-page__container
-          a(href="categories.html" data-stage='2').ajax-link.stage-link След страница
+        .container.container_type-1
+          .main-page__container.content
+            a(href="categories.html").ajax-link.stage-link След страница

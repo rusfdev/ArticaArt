@@ -1,5 +1,15 @@
 extends layout/artica
 block content
   main.main#barba-wrapper
-    .barba-container.id-prjct-page(data-order='3')
+    .barba-container#projectPreview(data-order='2' data-label='identity')
       .page-block.project-preview
+        .container.container_type-1
+          .project-preview__container.content
+            .project-preview__image
+              a(href="#").project-preview__link.cover-box.cover-box_size-auto
+                img(data-src="img/images/image1.jpg", alt="image1").lazy
+            h1.project-preview__title ROUTE 66
+            span.project-preview__line
+            p.project-preview__description R66 route diner style,<br> logos and prints
+            .project-preview__demo
+              a(href="http://route66.ru/" target='_blank').link.t-size-18 route66.ru

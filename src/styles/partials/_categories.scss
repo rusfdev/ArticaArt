@@ -1,6 +1,9 @@
 .categories {
   &__container {
-    height: calc(100% + 20px);
+    height: 100%;
+    .row {
+      height: calc(100% + 20px);
+    }
   }
 }
 .categories-block {
@@ -29,9 +32,7 @@
     width: 100%;
     top: 50%;
     margin-top: calc(-0.8em);
-    letter-spacing: 0.5em;
     padding: 0.2em 10px 0.2em 10px;
-    margin-left: 0.25em;
     left: 0;
     z-index: 3;
     text-align: center;
@@ -41,11 +42,14 @@
     .word {
       white-space: nowrap;
       display: inline-block;
-      padding: 0 0.3em;
+      padding: 0 0.45em;
       line-height: inherit;
     }
     .latter {
       display: inline-block;
+      &:not(:last-child) {
+        letter-spacing: 0.5em;
+      }
     }
   }
   .icon {
@@ -92,13 +96,14 @@
   .categories-block {
     font-size: 15px;
     &__sub-title {
-      letter-spacing: .3em;
-      margin-left: .15em;
       line-height: 1;
       padding: 0 10px .1em 10px;
       margin-top: -0.5em;
       .latter {
         font-size: 0.8em;
+        &:not(:last-child) {
+          letter-spacing: .3em;
+        }
       }
     }
   }
@@ -115,8 +120,6 @@
       border: 1px solid $border-color;
     }
     &__sub-title {
-      letter-spacing: .15em;
-      margin-left: .075em;
       padding: 0 10px 0.15em 10px;
       line-height: 0.7em;
       margin-top: -0.45em;
@@ -125,6 +128,9 @@
       }
       .latter {
         font-size: 0.6em;
+        &:not(:last-child) {
+          letter-spacing: .15em;
+        }
       }
     }
   }

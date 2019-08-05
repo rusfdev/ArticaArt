@@ -4,6 +4,29 @@
   fill: #000;
   stroke: #000;
 }
+.video-wrapper {
+  position: fixed !important;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+	overflow: hidden;
+	background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.video-wrapper__content {
+	position: absolute;
+	min-width: 100%;
+	min-height: 100%;
+	width: auto;
+	height: auto;
+	top: 50%;
+	left: 50%;
+	object-fit: cover;
+	transform: translate(-50%,-50%);
+}
 .nav-btn {
   width: 50px;
   height: 50px;
@@ -11,10 +34,11 @@
   display: flex;
   text-decoration: none;
   cursor: pointer;
-  position: fixed;
+  position: absolute;
   right: 10px;
   top: 20px;
   z-index: 100;
+  overflow: hidden;
   &__inner {
     position: relative;
     height: 100%;
@@ -53,8 +77,8 @@
   }
 }
 .logo {
-  position: fixed;
-  left: 20px;
+  position: absolute;
+  left: 70px;
   top: 29px;
   z-index: 100;
   visibility: hidden;
@@ -111,9 +135,10 @@
   }
 }
 .pagination {
-  position: fixed;
+  visibility: hidden;
+  position: absolute;
   z-index: 100;
-  right: 20px;
+  right: 21px;
   margin-top: 15px;
   top: calc(50%);
   transform: translateY(-50%);
@@ -144,9 +169,8 @@
       height: 18px;
       transition: 0.2s;
       transform: scale(0);
-      opacity: 0;
-      &:before {
-        content: '';
+      opacity: 0.5;
+      span {
         display: block;
         position: absolute;
         width: 100%;
@@ -160,13 +184,14 @@
         animation-duration: 1s;
         animation-timing-function: linear;
         animation-iteration-count: infinite;
+        background-color: transparent;
       }
     }
     @keyframes rotationAnimation {
-      0% {
+      from {
         transform: rotate(0);
       }
-      100% {
+      to {
         transform: rotate(360deg);
       }
     }
@@ -198,9 +223,109 @@
     }
     &.active {
       pointer-events: none;
-      span {
+      .dot {
         background-color: #000;
       }
+    }
+  }
+}
+.link {
+  text-decoration: none;
+  color: #000;
+  outline: none;
+  transition: 0.2s;
+  &:hover {
+    opacity: 0.7;
+  }
+}
+.lazy {
+  display: block;
+  min-width: 1px;
+  min-height: 1px;
+}
+.cover-box {
+  display: block;
+  position: relative;
+  .lazy {
+    display: block;
+    position: absolute;
+    width: auto;
+    height: auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .wh {
+    height:100%!important;
+  }
+  .ww {
+    width:100%!important;
+  }
+  &_contain {
+    background-color: transparent;
+    .wh {
+      width:100%!important;
+      height: auto!important;
+    }
+    .ww {
+      height:100%!important;
+      width: auto!important;
+    }
+  }
+  &_size-auto {
+    display: flex;
+    align-items: center;
+    .lazy {
+      position: relative;
+      left: 0;
+      top: 0;
+      transform: translate(0);
+    }
+  }
+}
+.label-item {
+  position: absolute;
+  z-index: 100;
+  left: 70px;
+  bottom: 70px;
+  visibility: hidden;
+  padding: 10px;
+  margin: -10px;
+  background-color: #fff;
+  &__container {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    height: 80px;
+    position: relative;
+  }
+  &__title {
+    position: relative;
+    z-index: 2;
+    background-color: #fff;
+    text-transform: uppercase;
+    line-height: 1.1;
+    font-size: 20px;
+    padding: 4px;
+  }
+  .icon {
+    height: 80px;
+    width: 100%;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .latter {
+    display: inline-block;
+    &:not(:last-child) {
+      letter-spacing: 0.4em;
+    }
+  }
+  &_graphic {
+    .label-item__container {
+      height: 110px;
+      align-items: flex-end;
     }
   }
 }
@@ -208,11 +333,33 @@
 @media screen and(max-width:1400px) {
   .nav-btn {
     top: 15px;
+    right: 5px;
+  }
+  .pagination {
+    right: 16px;
   }
   .logo {
     top: 26px;
+    left: 60px;
     &__link {
       font-size: 8.9px;
+    }
+  }
+  .label-item {
+    bottom: 50px;
+    left: 60px;
+    .icon {
+      height: 60px;
+    }
+    &__title {
+      font-size: 18px;
+      letter-spacing: 0.3em;
+    }
+    &__container {
+      height: 60px;
+    }
+    &_graphic .label-item__container {
+      height: 90px;
     }
   }
 }

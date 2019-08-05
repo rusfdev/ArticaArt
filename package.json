@@ -37,5 +37,8 @@
 		"imagemin-jpeg-recompress": "^6.0.0",
 		"imagemin-pngquant": "^8.0.0",
 		"node-sass": "^4.12.0"
+	},
+	"dependencies": {
+		"split-html-to-chars": "^1.0.5"
 	}
 }

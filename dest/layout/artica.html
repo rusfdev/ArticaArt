@@ -11,7 +11,7 @@
     <!--preloader-->
     <div class="preloader" style="width:100%;position:fixed;height:100%;width:100%;top:0;left:0;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center;z-index:1000"><img class="preloader__image" src="img/preloader.gif" alt="preloader" style="width:150px;height:150px;"></div>
     <div class="page-wrapper" style="visibility:hidden;overflow:hidden;">
-      <div class="logo"><a class="logo__link ajax-link index-link stage-link" href="index.html" data-stage="1">
+      <div class="logo"><a class="logo__link ajax-link index-link" href="index.html">
           <div class="logo__item"><svg class="icon"><use xlink:href="img/logos/logo.svg#item1"></use></svg></div>
           <div class="logo__item"><svg class="icon"><use xlink:href="img/logos/logo.svg#item2"></use></svg></div>
           <div class="logo__item"><svg class="icon"><use xlink:href="img/logos/logo.svg#item3"></use></svg></div>
@@ -25,18 +25,37 @@
         </div></a>
       <div class="pagination">
         <ul class="pagination__list">
-          <li class="pagination__item"><a class="pagination__link ajax-link index-link" href="index.html"><span class="dot"></span><span class="loader"></span></a></li>
-          <li class="pagination__item"><a class="pagination__link ajax-link" href="categories.html"><span class="dot"></span><span class="loader"></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="categories.html"><span class="dot"></span><span class="loader"><span></span></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="project1-preview.html" data-label="identity"><span class="dot"></span><span class="loader"><span></span></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="project2-preview.html" data-label="identity"><span class="dot"></span><span class="loader"><span></span></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="project3-preview.html" data-label="graphic"><span class="dot"></span><span class="loader"><span></span></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="project4-preview.html" data-label="graphic"><span class="dot"></span><span class="loader"><span></span></span></a></li>
         </ul>
+      </div>
+      <div class="label-item" id="identity">
+        <div class="label-item__container">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 109" stroke="none">
+            <path stroke="none" d="M0 0h13v109H0z"></path>
+          </svg>
+          <div class="label-item__title"><span class="word"><span class="latter">i</span><span class="latter">d</span><span class="latter">e</span><span class="latter">n</span><span class="latter">t</span><span class="latter">i</span><span class="latter">t</span><span class="latter">y</span></span></div>
+        </div>
+      </div>
+      <div class="label-item label-item_graphic" id="graphic">
+        <div class="label-item__container">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 115 115" stroke="none">
+            <path stroke="none" fill-rule="evenodd" clip-rule="evenodd" d="M.31 63.553h65.366V50.968H13.024C16.08 29.275 34.723 12.585 57.26 12.585c24.674 0 44.676 20.002 44.676 44.675 0 24.674-20.002 44.676-44.676 44.676-16.534 0-30.972-8.98-38.7-22.34l-.59-1.02H4.001l1.36 2.91c9.124 19.511 28.93 33.035 51.898 33.035 31.624 0 57.261-25.637 57.261-57.26C114.521 25.635 88.884 0 57.261 0 25.635 0 0 25.636 0 57.26c0 1.481.056 2.95.167 4.403l.143 1.89z"></path>
+          </svg>
+          <div class="label-item__title"><span class="word"><span class="latter">g</span><span class="latter">r</span><span class="latter">a</span><span class="latter">p</span><span class="latter">h</span><span class="latter">i</span><span class="latter">c</span></span><br><span class="word"><span class="latter">d</span><span class="latter">e</span><span class="latter">s</span><span class="latter">i</span><span class="latter">g </span><span class="latter">n</span></span></div>
+        </div>
       </div>
     </div>
     <!--styles-->
-    <link rel="stylesheet" href="styles/libs.min.css?1000">
     <link rel="stylesheet" href="styles/common.min.css?1000">
     <!--scripts-->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/jquery.gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/barba.js/1.0.0/barba.min.js"></script>
     <script src="js/libs.min.js?1000"></script>
     <script src="js/common.min.js?1000"></script>

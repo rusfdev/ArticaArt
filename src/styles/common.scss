@@ -8,10 +8,6 @@ $border-color: #E5E5E5;
   height: 100%;
   width: 100%;
   position: fixed;
-  body {
-    overflow: hidden;
-    height: 100%;
-  }
   .page-wrapper,
   .main,
   .barba-container,
@@ -29,18 +25,29 @@ body {
   width: 100%;
   line-height: 1.25;
   min-width: 320px;
+  overflow: hidden;
+  height: 100%;
 }
-.page-block {
-  padding: 90px 0 60px 0;
+.page-wrapper {
+  max-width: 1920px;
+  margin: 0 auto;
+  position: relative;
 }
 .container {
-  max-width: 1640px;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 0 70px;
+  padding: 90px 70px 70px 70px;
   position: relative;
   z-index: 2;
-  overflow: hidden;
-  min-height: 450px;
+  min-height: 800px;
+  &_type-1 {
+    display: flex;
+    align-items: center;
+    .content {
+      width: 100%;
+      max-height: 800px;
+    }
+  }
 }
 .hidden {
   visibility: hidden !important;
@@ -50,31 +57,39 @@ body {
 }
 
 
-@media screen and(max-width:1400px) {
-  .page-block {
-    padding: 80px 0 50px 0;
-  }
+@media screen and(max-width:1640px) {
   .container {
-    min-height: 370px;
+    min-height: 600px;
+  }
+  .container_type-1 .content {
+    max-height: 700px;
+  }
+}
+@media screen and(max-width:1400px) {
+  .container {
+    padding: 80px 60px 50px 60px;
+    min-height: 550px;
+  }
+  .container_type-1 .content {
+    max-height: 600px;
   }
 }
 @media screen and(max-width:1024px) {
   .container {
-    padding: 0 20px;
-  }
-  .page-block {
-    padding: 70px 0 40px 0;
+    padding: 70px 20px 40px 20px;
   }
 }
 @media screen and(max-width:768px) {
   .container {
-    min-height: 490px;
+    min-height: 1000px;
+  }
+  .container_type-1 .content {
+    max-height: 1200px;
   }
 }
 @media screen and(max-width:576px) {
   .container {
-    padding: 0 20px;
-    min-height: 390px;
+    min-height: 500px;
   }
 }
 //height
@@ -85,8 +100,11 @@ body {
   }
 }
 
-@import "./partials/ui";
 @import "./partials/grid";
+@import "./partials/ui";
+@import "./partials/test";
+@import "./partials/text";
 @import "./partials/main";
+@import "./partials/project";
 @import "./partials/categories";
 
