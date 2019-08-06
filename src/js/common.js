@@ -310,6 +310,7 @@ function pageEnterAnimation(firstAnimation) {
       .set('.project3__overlay', {autoAlpha: 1})
       .to('.project3__overlay-item:first-child span', 0.5, {xPercent: -100, ease: Power3.easeIn})
       .to('.project3__overlay-item:last-child span', 0.5, {xPercent: -100, ease: Power3.easeIn}, '-=0.5')
+      .set('.project3__line', {autoAlpha: 0})
       .to('.project3 .hidden-item', 0.5, {opacity:1})
       .to('.project3__overlay-item:first-child span', 0.5, {xPercent: -200, ease: Power3.easeOut}, '-=0.5')
       .to('.project3__overlay-item:last-child span', 0.5, {xPercent: -200, ease: Power3.easeOut}, '-=0.5')
@@ -445,8 +446,8 @@ function barba() {
             .to('.label-item__title, .label-item', 0.5, {css:{backgroundColor: '#fff'}})
             .to('.nav-btn__item', 0.5, {css:{backgroundColor: '#000'}}, '-=0.5')
             .to('.project3 .hidden-item', 0.5, {opacity:0, ease: Power2.easeIn}, '-=0.5')
-            .fromTo('.project3__overlay-item:first-child span', 0.5, {xPercent: 0, yPercent:100}, {yPercent:0, ease: Power3.easeIn}, '-=0.5')
-            .fromTo('.project3__overlay-item:last-child span', 0.5, {xPercent: 0, yPercent:-100}, {yPercent:0, ease: Power3.easeIn}, '-=0.5')
+            .fromTo('.project3__overlay-item:first-child span', 0.5, {xPercent: -100, yPercent:100}, {yPercent:0, ease: Power3.easeIn}, '-=0.5')
+            .fromTo('.project3__overlay-item:last-child span', 0.5, {xPercent: -100, yPercent:-100}, {yPercent:0, ease: Power3.easeIn}, '-=0.5')
             .set('.project3 .hidden-item, .project3__background', {autoAlpha: 0})
             .to('.project3__overlay-item:first-child span', 0.5, {yPercent:-100, opacity:0, ease: Power3.easeIn})
             .to('.project3__overlay-item:last-child span', 0.5, {yPercent:100, opacity:0, ease: Power3.easeIn}, '-=0.5')        }
