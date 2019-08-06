@@ -21,13 +21,12 @@ var $page = $('.page-wrapper'),
     logoAnimation,
     navBtnFadeAnimation = new TimelineMax({paused: true})
       .set('.nav-btn', {autoAlpha: 1})
-      .staggerFromTo('.nav-btn__item', 0.3, {opacity: 0, x: 30}, {opacity: 1, x: 0, ease: Back.easeOut.config(3)}, 0.1),
-    paginationAnimation1 = new TimelineMax({paused: true})
-      .set('.pagination', {autoAlpha: 1})
-      .staggerFromTo('.pagination__item', 0.8, {opacity: 0, y: 0, x: 10}, {opacity: 1, y: 0, x: 0, ease: Back.easeOut.config(3)}, 0.1),
-    paginationAnimation2 = new TimelineMax({paused: true})
-      .set('.pagination', {autoAlpha: 1})
-      .staggerFromTo('.pagination__item', 0.8, {opacity: 0, x: 0, y: 15}, {opacity: 1, x: 0, y: 0, ease: Back.easeOut.config(3)}, 0.1),
+      .staggerFromTo('.nav-btn__item', 1, {opacity: 0, x: 50}, {opacity: 1, x: 0, ease: Back.easeOut.config(3)}, 0.1)
+      .to('.nav-btn__item:eq(1)', 1, {scaleX: 0.7, xPercent: 15}, '-=1')
+      .set('.nav-btn__inner', {css:{overflow: 'hidden'}}),
+    mouseAnimation,
+    mouseHoverAnimation,
+    paginationAnimation,
     navBtnHoverAnimation,
     navBtnAnimation,
     labelFadeAnimation,
@@ -48,32 +47,8 @@ window.addEventListener('load',
 }, false);
 
 //functions
-function lazy() {
-  $(".lazy").Lazy({
-    effect: 'fadeIn',
-    visibleOnly: true,
-    effectTime: 0,
-    threshold: 0,
-    imageBase: false,
-    defaultImage: false,
-    afterLoad: function(element) {
-      var box = element.parent();
-      if(!box.hasClass('cover-box_size-auto')) {
-        var boxH = box.height(),
-          boxW = box.width(),
-          imgH = element.height(),
-          imgW = element.width();
-        if ((boxW / boxH) >= (imgW / imgH)) {
-          element.addClass('ww').removeClass('wh');
-        } else {
-          element.addClass('wh').removeClass('ww');
-        }
-      }
-    }
-  });
-}
 function niceScroll() {
-  $('.page-block').niceScroll({
+  $('.container').niceScroll({
     cursorcolor: '#000',
     cursorwidth: '5px',
     cursorborder: '0',
@@ -107,27 +82,16 @@ function parralax1() {
   });
 }
 function nav() {
-  var $navButton = $('.nav-btn'),
-      $overlay = $('.overlay'),
-      inAnim = false,
-      openAnimation;
-
-  navBtnAnimation = new TimelineMax({reversed: true, paused: true})
-    .set($navButton.find('.nav-btn__item'), {css:{overflow:'visible'}})
-    .to($navButton.find('.nav-btn__item'), 0.15, {x: -8})
-    .to([$navButton.find('.nav-btn__item:eq(0)'), $navButton.find('.nav-btn__item:eq(2)')], 0.15, {y: 0})
-    .set($navButton.find('.nav-btn__item'), {css:{overflow:'hidden'}})
-    .set($navButton.find('.nav-btn__item:eq(1)'), {opacity: 0})
-    .to($navButton.find('.nav-btn__item:eq(0)'), 0.15, {rotation: 45})
-    .to($navButton.find('.nav-btn__item:eq(2)'), 0.15, {rotation: 135}, '-=0.15')
-
+  var $navButton = $('.nav-btn');
+  
   navBtnHoverAnimation = new TimelineMax({paused: true})
-    .to($navButton.find('.nav-btn__item:eq(1) span'), 0.15, {x: -8})
-    .to([$navButton.find('.nav-btn__item:eq(0) span'), $navButton.find('.nav-btn__item:eq(2) span')], 0.15, {x: 0}, '-=0.15')
-
-
+    .to('.nav-btn__item:eq(1)', 0.3, {scaleX:1, xPercent:0, ease: Power1.easeOut})
+    .to('.nav-btn__item:eq(0), .nav-btn__item:eq(2)', 0.3, {scaleX:0.7, xPercent:15, ease: Power1.easeOut}, '-=0.3')
+  navBtnAnimation = new TimelineMax({paused: true})
+    .to('.nav-btn__item:eq(1)', 0.3, {scaleX:1, xPercent:0, ease: Power1.easeOut})
   
   $navButton.on('click mouseenter mouseleave', function(e) {
+    e.preventDefault();
     if(e.type == 'click') {
       if (navBtnAnimation.reversed()) {
         navBtnAnimation.stop()
@@ -154,7 +118,7 @@ function logoToggle(state) {
   if(state == true && logoState==false) {
     logoAnimation = new TimelineMax()
     .set($logo, {autoAlpha: 1})
-    .staggerFromTo($logo.find('.logo__item'), 0.5, {opacity: 0, y: 10}, {opacity: 1, y: 0, ease: Back.easeOut.config(3)}, 0.05),
+    .staggerFromTo($logo.find('.logo__item'), 0.5, {opacity: 0, yPercent: 35, xPercent:-10}, {opacity:1, yPercent:0, xPercent:0, ease: Power2.easeOut}, 0.075),
     logoState=true;
   } else if(state == false && logoState==true) {
     if(inScroll == true) {
@@ -169,16 +133,22 @@ function logoToggle(state) {
 function navToggle(state) {
   if(state == true && navState==false) {
     if(pageWidth > 1024) {
-      paginationAnimation1.play();
+      paginationAnimation = new TimelineMax()
+      .set('.pagination', {autoAlpha: 1})
+      .staggerFromTo('.pagination__item', 0.8, {opacity: 0, y: 0, x: 10}, {opacity: 1, y: 0, x: 0, ease: Back.easeOut.config(3)}, 0.1)
     } else {
-      paginationAnimation2.play();
+      paginationAnimation = new TimelineMax()
+      .set('.pagination', {autoAlpha: 1})
+      .staggerFromTo('.pagination__item', 0.8, {opacity: 0, x: 0, y: 15}, {opacity: 1, x: 0, y: 0, ease: Back.easeOut.config(3)}, 0.1)
     }
     navState=true;
   } else if(state == false && navState==true) {
-    if(pageWidth > 1024) {
-      paginationAnimation1.reverse();
+    if(inScroll == true) {
+      paginationAnimation = new TimelineMax()
+      .to('.pagination', 0.5, {opacity: 0})
+      .set('.pagination', {autoAlpha: 0})
     } else {
-      paginationAnimation2.reverse();
+      paginationAnimation.reverse();
     }
     navState=false;
   }
@@ -196,8 +166,8 @@ function showLabel() {
     .set($label, {autoAlpha: 1})
     .fromTo($label.find('.icon'), 1.5, {opacity: 0, rotation: 0}, {opacity: 1, rotation: 180, ease: Power3.easeOut})
     .fromTo($label.find('.label-item__title'), 0.5, {opacity: 0, y: 15}, {opacity: 1, y: 0}, '-=1')
-    .staggerFromTo($label.find('.latter'), 0.5, {opacity: 0, y: 10}, {opacity: 1, y: 0, ease: Back.easeOut.config(3)}, 0.05, '-=1')
-  oldLabel = newLabel;
+    .staggerFromTo($label.find('.latter'), 0.5, {opacity: 0, yPercent: 35, xPercent:-10}, {opacity:1, yPercent:0, xPercent:0, ease: Power2.easeOut}, 0.05, '-=1');
+    oldLabel = newLabel;
 }
 function hideLabel() {
   if(inScroll == true) {
@@ -219,8 +189,29 @@ function pageEnterAnimation(firstAnimation) {
 
   inAnimation = true;
   
-  if($barbaContainer.find('img').length > 0) {
-    lazy();
+  if($barbaContainer.find('.lazy').length > 0) {
+    $(".lazy").Lazy({
+      effect: 'fadeIn',
+      visibleOnly: true,
+      effectTime: 0,
+      threshold: 0,
+      imageBase: false,
+      defaultImage: false,
+      afterLoad: function(element) {
+        var box = element.parent();
+        if(box.hasClass('cover-box') && !box.hasClass('cover-box_size-auto')) {
+          var boxH = box.height(),
+            boxW = box.width(),
+            imgH = element.height(),
+            imgW = element.width();
+          if ((boxW / boxH) >= (imgW / imgH)) {
+            element.addClass('ww').removeClass('wh');
+          } else {
+            element.addClass('wh').removeClass('ww');
+          }
+        }
+      }
+    });
     $('img').bind('load', function () {
       anim();
     });
@@ -281,9 +272,30 @@ function pageEnterAnimation(firstAnimation) {
     }
     //анимация для главной страницы
     else if(pageId=='main') {
-      mainVideo();
-      enterAnimation = new TimelineMax({onStart:function(){onStartAnimation()},onComplete:function(){onCompleteAnimation()}})
-      .fromTo('.main-page', 1, {opacity: 0}, {opacity: 1})
+      mouseAnimation = new TimelineMax({repeat: -1})
+      .fromTo('.main-page__scroll svg:last-child', 0.5, {opacity: 0}, {opacity: 1})
+      .fromTo('.main-page__scroll svg:last-child', 1.25, {y:0}, {y:7, ease: Power1.easeOut}, '-=0.5')
+      .fromTo('.main-page__scroll svg:last-child', 0.5, {opacity: 1}, {opacity: 0, ease: Power1.easeOut}, '-=0.5')
+
+      enterAnimation = new TimelineMax({onStart:function(){onStartAnimation()},onComplete:function(){onCompleteAnimation();mainVideo()}})
+      .set('.main-page', {autoAlpha: 1})
+      .fromTo('.main-page__background', 1.5, {scale:1.3, opacity:0}, {scale:1, opacity:1, ease: Power2.easeOut})
+      .fromTo('.main-page__scroll', 1, {opacity:0, y: -50}, {opacity:1, y:0, ease: Power3.easeOut}, '-=1.5')
+      .staggerFromTo('.main-page .logo__item', 0.8, {opacity: 0, yPercent: 35, xPercent:-10}, {opacity:0.6, yPercent:0, xPercent:0, ease: Power2.easeOut}, 0.1, '-=1.5')
+      .staggerFromTo('.logo__description .latter', 0.5, {opacity: 0, yPercent: 35, xPercent:-10}, {opacity:0.6, yPercent:0, xPercent:0, ease: Power2.easeOut}, 0.05, '-=1.5')
+
+      $('.main-page__scroll').on('click mouseenter mouseleave', function(e) {
+        if(e.type == 'mouseenter') {
+          mouseAnimation.stop();
+          mouseHoverAnimation = new TimelineMax()
+          .to('.main-page__scroll svg:last-child', 0.5, {opacity: 1, y:10})
+        } else if(e.type == 'mouseleave') {
+          mouseHoverAnimation = new TimelineMax({onComplete: function() {
+            mouseAnimation.restart();
+          }})
+          .to('.main-page__scroll svg:last-child', 0.5, {opacity: 0})
+        }
+      })
     }
     //анимация для превью страниц
     else if(pageId=='projectPreview') {
@@ -398,6 +410,7 @@ function barba() {
           deferred = Barba.Utils.deferred();
 
       pageExitAnimation(oldId);
+
       function timerStart() {
         preloaderTimer = setTimeout(function() {
           $preloader.fadeIn(200);
@@ -407,31 +420,39 @@ function barba() {
         $barbaContainer.css('overflow', 'hidden');
         if(inScroll == true) {
           if(oldId == 'project3') {
-            exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
+            exitAnimation = new TimelineMax({onComplete:function(){timerStart();deferred.resolve()}})
             .to('.barba-container', 0.5, {opacity: 0})
             .to('.label-item__title, .label-item', 0.7, {css:{backgroundColor: '#fff'}}, '-=0.5')
             .to('.nav-btn__item', 0.5, {css:{backgroundColor: '#000'}}, '-=0.5')
           } else {
-            exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve()}})
+            exitAnimation = new TimelineMax({onComplete:function(){timerStart();deferred.resolve()}})
             .to('.barba-container', 0.5, {opacity: 0})
           }
         } else {
           //анимация для главной страницы
           if(oldId == 'main') {
-            exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
-              .to('.barba-container', 0.5, {opacity: 0})
+            exitAnimation = new TimelineMax({onStart:function() {
+              mouseAnimation.stop();
+              mouseHoverAnimation = new TimelineMax()
+              .to('.main-page__scroll svg:last-child', 0.3, {opacity: 1})
+              .to('.main-page__scroll svg:first-child', 1, {opacity: 0, ease: Power2.easeOut}, '-=1')
+              .to('.main-page__scroll svg:last-child', 1, {y:30, ease: Power2.easeOut}, '-=1')
+              .to('.main-page__scroll svg:last-child', 0.5, {opacity: 0}, '-=0.7')
+            }, onComplete:function(){timerStart();deferred.resolve()}})
+            .to('.main-page__background, .video-wrapper', 1, {scale:1.3, opacity:0, ease: Power2.easeIn})
+            .to('.logo_main', 1, {opacity: 0, scale: 0.75, ease: Power2.easeIn}, '-=1')
           }
 
           //анимация для страницы категорий
           else if(oldId=='categories') {
-            exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
+            exitAnimation = new TimelineMax({onComplete:function(){timerStart();deferred.resolve()}})
               .staggerTo(".categories-block__container", 0.5, {opacity:0, y: 50, ease: Power4.easeIn, stagger: {from: "end", amount: 0.5}});
           }
 
           //анимация для страницы превью
           else if(oldId == 'projectPreview') {
             var $image = $('.project-preview__image'), w = $image.width();
-            exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
+            exitAnimation = new TimelineMax({onComplete:function(){timerStart();deferred.resolve()}})
               .to('.project-preview__image .project-preview__link', 1, {x: w, opacity: 0, ease: Power3.easeIn})
               .to('.project-preview__label .icon', 1, {opacity: 0, rotation: -180, ease: Power3.easeIn}, '-=1')
               .to('.project-preview__label-title', 0.5, {opacity: 0, y: 15}, '-=0.5')
@@ -529,15 +550,16 @@ function categories() {
           .to($current.find('.icon'), 0.5, {rotation: 180, ease: Power1.easeInOut})
           .to($current.find('.icon'), 0.5, {css:{fill:'#fff'}}, '-=0.5')
           .fromTo($current.find('.categories-block__bg'), 0.5, {x: x, y: y}, {x: 0, y: 0},'-=0.5')
-          .fromTo($current.find('.categories-block__sub-title'), 0.3, {opacity: 0, y: 15}, {opacity: 1, y: 0})
-          .staggerFromTo($current.find('.categories-block__sub-title span'), 0.3, {opacity: 0, y: 10}, {opacity: 1, y: 0, ease: Back.easeOut.config(3)}, 0.05)
+          .fromTo($current.find('.categories-block__sub-title'), 0.5, {opacity: 0, y: 15, x: 0}, {opacity: 1, y: 0})
+          .staggerFromTo($current.find('.categories-block__sub-title span'), 0.2, {opacity: 0, yPercent: 35, xPercent:-10}, {opacity:1, yPercent:0, xPercent:0, ease: Power2.easeOut}, 0.05, '-=0.5')
       } else if(direction=='back') {
         animation = new TimelineMax()
           .to($current.find('.categories-block__bg'), 0.5, {x: x, y: y})
+          .to($current.find('.categories-block__sub-title'), 0.25, {opacity: 0}, '-=0.5')
+          .to($current.find('.categories-block__sub-title'), 0.5, {x: x, y: y}, '-=0.5')
           .set($current.find('.categories-block__bg'), {opacity: 0})
           .to($current.find('.icon'), 0.5, {css:{fill:'#000'}}, '-=0.5')
           .to($current.find('.icon'), 0.5, {rotation: 0}, '-=0.5')
-          .to($current.find('.categories-block__sub-title'), 0.3, {opacity: 0}, '-=0.5')
       }
     }
     

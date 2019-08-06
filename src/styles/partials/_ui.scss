@@ -38,98 +38,81 @@
   right: 10px;
   top: 20px;
   z-index: 100;
-  overflow: hidden;
   &__inner {
     position: relative;
     height: 100%;
     width: 100%;
-    overflow: hidden;
   }
   &__item {
     display: block;
     position: absolute;
-    left: 8px;
-    top: 14px;
     width: 100%;
     height: 2px;
     background-color: #000;
-    span {
-      display: block;
-      position: absolute;
-      background-color: inherit;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
+    right: 0;
+    &:nth-child(1) {
+      top: 4px;
     }
-    &:first-child {
-      transform: translateY(-9px);
-      span {
-        transform: translateX(-8px);
-      }
+    &:nth-child(2) {
+      top: 14px;
     }
-    &:last-child {
-      transform: translateY(9px);
-      span {
-        transform: translateX(-8px);
-      }
+    &:nth-child(3) {
+      bottom: 4px;
     }
   }
 }
 .logo {
-  position: absolute;
-  left: 70px;
-  top: 29px;
-  z-index: 100;
   visibility: hidden;
+  &_small {
+    position: absolute;
+    left: 70px;
+    top: 29px;
+    z-index: 100;
+    font-size: 10px;
+  }
   &__link {
     display: block;
     text-decoration: none;
-    cursor: pointer;
     display: flex;
     align-items: flex-end;
-    font-size: 10px;
     height: 3.15em;
   }
-  .icon {
-    margin-bottom: -0.1em;
+  svg {
+    margin-bottom: -0.28em;
   }
   &__item {
     pointer-events: none;
     &:nth-child(1),
     &:nth-child(6) {
-      .icon {
-        width: 3.76em;
+      svg {
         height: 3.15em;
       }
     }
+    &:nth-child(1) {
+      margin-right: -0.2em;
+    }
     &:nth-child(2) {
-      .icon {
-        width: 1.98em;
+      margin-right: 0.3em;
+      svg {
         height: 2.08em;
-        margin-left: -0.3em;
-        margin-right: 0.2em;
       }
     }
     &:nth-child(3) {
-      .icon {
-        width: 1.88em;
+      margin-right: 0.4em;
+      svg {
         height: 2.08em;
-        margin-right: 0.3em;
       }
     }
     &:nth-child(4) {
-      .icon {
-        width: 0.6em;
+      margin-right: 0.4em;
+      svg {
         height: 2.08em;
-        margin-right: 0.3em;
       }
     }
     &:nth-child(5) {
-      .icon {
-        width: 1.95em;
+      margin-right: 0.2em;
+      svg {
         height: 2.08em;
-        margin-right: 0.15em;
       }
     }
   }
@@ -338,10 +321,10 @@
   .pagination {
     right: 16px;
   }
-  .logo {
+  .logo_small {
     top: 26px;
     left: 60px;
-    &__link {
+    .logo__link {
       font-size: 8.9px;
     }
   }
@@ -382,10 +365,10 @@
     right: 10px;
     top: 10px;
   }
-  .logo {
+  .logo_small {
     top: 23.5px;
     left: 20px;
-    &__link {
+    .logo__link {
       font-size: 7.35px;
     }
   }
@@ -394,7 +377,7 @@
   .nav-btn {
     right: 10px;
   }
-  .logo {
+  .logo_small {
     left: 20px;
   }
 }
