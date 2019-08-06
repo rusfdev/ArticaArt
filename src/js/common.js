@@ -299,21 +299,22 @@ function pageEnterAnimation(firstAnimation) {
     }
     //анимация для project3
     else if(pageId=='project3') {
-      enterAnimation = new TimelineMax({onStart:function(){onStartAnimation();parralax1()},onComplete:function(){onCompleteAnimation()}})
+      enterAnimation = new TimelineMax({paused: true, onStart:function(){onStartAnimation()},onComplete:function(){onCompleteAnimation();parralax1()}})
       .to('.project3__line span:first-child', 0.5, {yPercent: -100, ease: Power2.easeIn})
       .to('.project3__line span:last-child', 0.5, {yPercent: 100, ease: Power2.easeIn}, '-=0.5')
       .set('.project3__background', {autoAlpha: 1})
-      .fromTo('.project3__background-item:first-child span', 0.7, {xPercent: 100}, {xPercent: 0, ease: Power2.easeOut})
-      .fromTo('.project3__background-item:last-child span', 0.7, {xPercent: -100}, {xPercent: 0, ease: Power2.easeOut}, '-=0.7')
+      .to('.project3__background-item:first-child span', 0.7, {xPercent: -100, ease: Power2.easeOut})
+      .to('.project3__background-item:last-child span', 0.7, {xPercent: 100, ease: Power2.easeOut}, '-=0.7')
       .to('.label-item__title, .label-item', 0.7, {css:{backgroundColor: '#efefef'}}, '-=0.7')
       .to('.nav-btn__item', 0.7, {css:{backgroundColor: '#fff'}}, '-=0.7')
       .set('.project3__overlay', {autoAlpha: 1})
-      .fromTo('.project3__overlay-item span', 0.5, {xPercent: 100}, {xPercent: 0, ease: Power3.easeIn})
-      .set('.project3 .hidden-item', {autoAlpha: 1})
-      .set('.project3__line', {autoAlpha: 0})
-      .fromTo('.project3 .hidden-item', 0.5, {opacity:0}, {opacity:1, ease: Power2.easeOut})
-      .to('.project3__overlay-item span', 0.5, {xPercent: -100, ease: Power3.easeOut}, '-=0.5')
+      .to('.project3__overlay-item:first-child span', 0.5, {xPercent: -100, ease: Power3.easeIn})
+      .to('.project3__overlay-item:last-child span', 0.5, {xPercent: -100, ease: Power3.easeIn}, '-=0.5')
+      .to('.project3 .hidden-item', 0.5, {opacity:1})
+      .to('.project3__overlay-item:first-child span', 0.5, {xPercent: -200, ease: Power3.easeOut}, '-=0.5')
+      .to('.project3__overlay-item:last-child span', 0.5, {xPercent: -200, ease: Power3.easeOut}, '-=0.5')
       .set('.project3__overlay', {autoAlpha: 0})
+      enterAnimation.play()
     }
   }
 }
