@@ -1,0 +1,4 @@
+require valid-user
+Authname "Basic Auth"
+Authtype Basic
+AuthUserFile "/var/www/u0683784/data/www/test.artica.art/.htpasswd"

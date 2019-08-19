@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    title Artica digital agency
+    meta(name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0")
+    link(rel="shortcut icon" href="img/favicon.png" type="image/png")
+    base(href="http://localhost:9000/")
+    //base(href="http://test.artica.art/")
+  body(style='overflow: hidden')
+    include ../blocks/preloader
+    .page-wrapper(style='visibility:hidden')
+      include ../blocks/fixed
+      .page-container
+        include ../blocks/labels
+        block content
+    //styles
+    link(rel="stylesheet" href="styles/common.min.css?1000")
+    //scripts
+    script(src="https://code.jquery.com/jquery-3.3.1.min.js")
+    script(src="js/app.min.js?1000")

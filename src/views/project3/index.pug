@@ -1,0 +1,32 @@
+extends ../layout/artica
+block content
+  main.main#barba-wrapper
+    .barba-container#project3(data-project data-label='graphic')
+      .page-block.project.project3
+        .project__head
+          .project3__line
+            span
+            span
+          .project3__background
+            .project3__background-item
+              span
+            .project3__background-item
+              span
+          .project3__overlay
+            .project3__overlay-item
+              span
+            .project3__overlay-item
+              span
+          .container.container_display-size
+            .container__inner
+              .container__content.project__container
+                span.project3__description.hidden-item.t-size-36 Без черного цвета<br>вещи выглядят<br> неправильно
+                span.project__description.hidden-item.t-size-24 Графический дизайн 
+                #scene.project3__scene.hidden-item
+                  .project3__layer(data-depth="0.03")
+                    img(data-src='img/images/zebra1.png', alt="").lazy.horse
+                  .project3__layer(data-depth="0.05")
+                    img(data-src='img/images/psina.png', alt="").lazy.dog
+        .project__content
+          .container.container_display-size
+            span content
