@@ -1,12 +1,11 @@
+import Barba from "barba.js";
 import device from 'current-device';
 import Scrollbar from 'smooth-scrollbar';
 import easing from '../libs/easing/easing';
 import bgVideo from '../libs/bg-video/bgvideo';
 import TweenMax from "gsap/TweenMax";
-import Barba from "barba.js";
 import Lazy from "jquery-lazy";
 import Parallax from 'parallax-js'
-
 
 //global var
 var $document = $(document),
@@ -18,6 +17,7 @@ var $document = $(document),
     $pgItem = $('.pagination__item'),
     $pgLink = $('.pagination__link'),
     $logo = $('.logo'),
+    $scrollThumb,
     newLabel = $barbaContainer.data('label'),
     oldLabel,
     exitAnimationProgress,
@@ -47,6 +47,7 @@ var $document = $(document),
     labelHideAnimation,
     project1backgroundAnimation,
     preloaderTimer,
+    displayHeight,
     scrollbar;
 
 
@@ -72,8 +73,8 @@ $.fn.hasAttr = function(name) {
 
 function resizeEvents() {
   var $container = $('.container_display-size'),
-      $inner = $('.container__inner'),
-      displayHeight = $('body').height();
+      $inner = $('.container__inner');
+  displayHeight = $('body').height();
 
   $container.css('height', displayHeight);
   $pageContainer.css('height', displayHeight);
@@ -84,16 +85,26 @@ function resizeEvents() {
       labelX = $inner.offset().left;
   
   $label.css({'top': labelY, 'left': labelX});
-}
-
-function pageScroll() {
-  scrollbar = Scrollbar.init(document.querySelector('.page-container'), {
-    damping: 0.05
+  $('.lazy').each(function() {
+    imagesResize($(this))
   });
-  
-  scrollbar.track.yAxis.show();
 }
-
+function imagesResize(element) {
+  var box = element.parent();
+  if(!box.hasClass('cover-box_size-auto')) {
+    var boxH = box.height(),
+        boxW = box.width();
+    setTimeout(function() {
+      var imgH = element.height(),
+          imgW = element.width();
+      if ((boxW / boxH) >= (imgW / imgH)) {
+      element.addClass('ww').removeClass('wh');
+      } else {
+        element.addClass('wh').removeClass('ww');
+      }
+    }, 50)
+  }
+}
 function mainVideo() {
   var $videoContainer = $('.video-wrapper'),
   videoPath = $videoContainer.data('path');
@@ -147,7 +158,7 @@ function nav() {
     }
   })
 }
-function paginationChange() {
+function pagination() {
   $pgItem.find('.pagination__link').removeClass('active').removeClass('onload');
   $pgItem.eq(pageOrder - 1).find('.pagination__link').addClass('active');
 }
@@ -214,6 +225,42 @@ function hideLabel() {
     .set($label, {autoAlpha: 0})
   }
 }
+function scrollbarFunction() {
+  scrollbar = Scrollbar.init(document.querySelector('.page-container'), {
+    damping: 0.05
+  });
+  $scrollThumb = $('.scrollbar-track-y .scrollbar-thumb');
+
+  var flag1 = false,
+      changeColorAnim;
+
+  if(pageId=='project3') {
+    changeColorAnim = new TimelineMax()
+    .set($scrollThumb, {css:{backgroundColor: '#fff'}})
+  }
+  scrollbar.addListener((status) => {
+    if(pageId=='project3') {
+      var x1 = scrollbar.size.container.height - scrollbar.offset.y,
+          x2 = scrollbar.track.yAxis.thumb.offset + scrollbar.track.yAxis.thumb.realSize/2;
+          console.log(x1, x2);
+      if(x1 < x2) {
+        if(flag1 == false) {
+          flag1 = true;
+          changeColorAnim = new TimelineMax()
+            .to($scrollThumb, 1, {css:{backgroundColor: '#000'}})
+          }
+      } else {
+        if(flag1 == true) {
+          flag1 = false;
+          changeColorAnim = new TimelineMax()
+            .to($scrollThumb, 1, {css:{backgroundColor: '#fff'}})
+          }
+        }
+    }
+  });
+  
+  scrollbar.track.yAxis.show();
+}
 
 
 function pageEnterAnimation(firstAnimation) {
@@ -222,6 +269,7 @@ function pageEnterAnimation(firstAnimation) {
   pageOrder = $barbaContainer.data('order');
   $barbaContainer.show();
 
+  //проверка какой нужно показать лейбл и показывать ли его вообще
   if($barbaContainer.hasAttr('data-label')) {
     newLabel = $barbaContainer.data('label');
     $label = $('#' + newLabel);
@@ -236,7 +284,7 @@ function pageEnterAnimation(firstAnimation) {
     oldLabel = false;
   }
   resizeEvents();
-
+  //Если есть картинки - сначала грузим их, далее запускаем анимацию
   if($barbaContainer.find('.lazy').length > 0) {
     var imageLoaded = 0,
         imagesCount = $barbaContainer.find('.lazy').length;
@@ -254,18 +302,7 @@ function pageEnterAnimation(firstAnimation) {
       imageBase: false,
       defaultImage: false,
       afterLoad: function(element) {
-        var box = element.parent();
-        if(box.hasClass('cover-box') && !box.hasClass('cover-box_size-auto')) {
-          var boxH = box.height(),
-            boxW = box.width(),
-            imgH = element.height(),
-            imgW = element.width();
-          if ((boxW / boxH) >= (imgW / imgH)) {
-            element.addClass('ww').removeClass('wh');
-          } else {
-            element.addClass('wh').removeClass('ww');
-          }
-        }
+        imagesResize(element);
       }
     });
   } else {
@@ -278,7 +315,7 @@ function pageEnterAnimation(firstAnimation) {
     inScroll = true;
     preloaderTimer = clearTimeout(preloaderTimer);
     $preloader.fadeOut(200);
-    paginationChange();
+    pagination();
     if(firstAnimation==true) {
       navBtnFadeAnimation.play();
       if(pageId !== 'main') {
@@ -306,7 +343,7 @@ function pageEnterAnimation(firstAnimation) {
     //анимация для главной страницы
     if(pageId=='main') {
       parralaxMain();
-      var a = false;
+      var flag = false;
       mouseAnimation = new TimelineMax({repeat: -1})
       .fromTo('.main-page__scroll svg:last-child', 0.5, {opacity: 0}, {opacity: 1})
       .fromTo('.main-page__scroll svg:last-child', 1.25, {y:0}, {y:7, ease: Power1.easeOut}, '-=0.5')
@@ -322,16 +359,16 @@ function pageEnterAnimation(firstAnimation) {
       .staggerFromTo('.logo__description .latter', 0.75, {opacity: 0}, {opacity: 0.6, ease: Power1.easeInOut, stagger: {amount: 0.75}}, 0, '-=1.5')
       .staggerFromTo('.logo__description .latter', 0.75, {yPercent: 50, xPercent:-15}, {yPercent:0, xPercent:0, ease: Power4.easeOut, stagger: {amount: 0.75}}, 0, '-=1.5')
 
-      $('.main-page__scroll').on('click mouseenter mouseleave', function(e) {
-        if(e.type == 'mouseenter') {
+      $('.main-page__scroll').on('click mouseenter touchstart mouseleave touchend', function(e) {
+        if(e.type == 'mouseenter' || e.type == 'touchstart') {
           mouseAnimation.stop();
-          if(a==true) {
+          if(flag==true) {
             mouseHoverAnimation.stop();
           }
           mouseHoverAnimation = new TimelineMax()
           .to('.main-page__scroll svg:last-child', 0.5, {opacity: 1, y:10})
-          a = true;
-        } else if(e.type == 'mouseleave') {
+          flag = true;
+        } else if(e.type == 'mouseleave' || e.type == 'touchend') {
           if(exitAnimationProgress == false) {
             mouseHoverAnimation = new TimelineMax({onComplete: function() {
               mouseAnimation.restart();
@@ -367,7 +404,7 @@ function pageEnterAnimation(firstAnimation) {
         .to('.project__head, .label-item__container, .label-item__title', 2, {css: {backgroundColor: '#980000'}, ease: Power1.easeInOut}, '+=2')
         .to('.project__head, .label-item__container, .label-item__title', 2, {css: {backgroundColor: '#FACB8D'}, ease: Power1.easeInOut}, '+=2')
         .to('.project__head, .label-item__container, .label-item__title', 2, {css: {backgroundColor: '#003679'}, ease: Power1.easeInOut}, '+=2')
-      enterAnimation = new TimelineMax({onComplete:function(){onCompleteAnimation();project1backgroundAnimation.play();pageScroll();}})
+      enterAnimation = new TimelineMax({onComplete:function(){onCompleteAnimation();project1backgroundAnimation.play();scrollbarFunction();}})
         .set('.page-block', {autoAlpha: 1})
         .fromTo('.project1__scene, .project__description', 1.5, {opacity: 0}, {opacity: 1, ease: Power1.easeInOut})
         .fromTo('.project1__layer:first-child .project1__layer-container', 1.5, {x:50}, {x:0, ease: Power3.easeOut}, '-=1.5')
@@ -377,7 +414,7 @@ function pageEnterAnimation(firstAnimation) {
     //анимация для project3
     else if(pageId=='project3') {
       parralaxProject();
-      enterAnimation = new TimelineMax({onComplete:function(){onCompleteAnimation();pageScroll()}})
+      enterAnimation = new TimelineMax({onComplete:function(){onCompleteAnimation();scrollbarFunction()}})
       .set('.page-block', {autoAlpha: 1})
       .to('.project3__line span:first-child', 0.5, {yPercent: -100, ease: Power2.easeIn})
       .to('.project3__line span:last-child', 0.5, {yPercent: 100, ease: Power2.easeIn}, '-=0.5')
@@ -483,25 +520,15 @@ function barba() {
       }
 
       function pageExitAnimation() {
-        if(inScroll == true) {
-          enterAnimation.eventCallback("onComplete", null);
-          if(oldId == 'project1') {
-            exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
-            .to('.project__container, .project__content', 0.5, {opacity: 0, ease: Power1.easeIn})
-            .to('.project__head, .label-item__container, .label-item__title', 0.5, {css:{backgroundColor: '#fff'}, ease: Power1.easeIn}, '-=0.5')
-          }
-          else if(oldId == 'project3') {
-            exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
-            .to('.page-block', 0.5, {opacity: 0, ease: Power1.easeIn})
-            .to('.label-item__container, .label-item__title', 0.5, {css:{backgroundColor: '#fff'}, ease: Power1.easeIn}, '-=0.5')
-            .to('.nav-btn__item', 0.5, {css:{backgroundColor: '#000'}, ease: Power1.easeIn}, '-=0.5')
+        enterAnimation.eventCallback("onComplete", null);
+        var exitAnimation2 = new TimelineMax({paused: true, onComplete:function(){timerStart();deferred.resolve()}})
+          .to('.page-block', 0.5, {opacity: 0, ease: Power1.easeIn})
+        
+        //анимация для главной страницы
+        if(oldId == 'main') {
+          if(inScroll == true) {
+            exitAnimation = exitAnimation2.play();
           } else {
-            exitAnimation = new TimelineMax({onComplete:function(){timerStart();deferred.resolve()}})
-            .to('.page-block', 0.5, {opacity: 0, ease: Power1.easeIn})
-          }
-        } else {
-          //анимация для главной страницы
-          if(oldId == 'main') {
             exitAnimation = new TimelineMax({onStart:function() {
               mouseAnimation.stop();
               mouseHoverAnimation = new TimelineMax()
@@ -509,64 +536,83 @@ function barba() {
               .to('.main-page__scroll svg:last-child', 0.25, {opacity: 1, ease: Power2.easeIn}, '-=1')
               .to('.main-page__scroll svg:first-child', 0.75, {opacity: 0, ease: Power2.easeInOut}, '-=0.75')
               .to('.main-page__scroll svg:last-child', 0.75, {opacity: 0, ease: Power2.easeInOut}, '-=0.75')
-            }, onComplete:function(){timerStart();deferred.resolve()}})
-            .staggerTo('.main-page .logo__item', 0.5, {opacity: 0, yPercent: 50, xPercent:-15, ease: Power2.easeIn, stagger: {from: "end", amount: 0.5}})
-            .staggerTo('.logo__description .latter', 0.5, {opacity: 0, yPercent: 50, xPercent:-15, ease: Power3.easeIn, stagger: {from: "end", amount: 0.5}}, 0, '-=1')
-            .to('.main-page__background', 1, {scale:1.3, opacity:0, ease: Power3.easeIn}, '-=1') 
+              }, onComplete:function(){timerStart();deferred.resolve()}})
+              .staggerTo('.main-page .logo__item', 0.5, {opacity: 0, yPercent: 50, xPercent:-15, ease: Power2.easeIn, stagger: {from: "end", amount: 0.5}})
+              .staggerTo('.logo__description .latter', 0.5, {opacity: 0, yPercent: 50, xPercent:-15, ease: Power3.easeIn, stagger: {from: "end", amount: 0.5}}, 0, '-=1')
+              .to('.main-page__background', 1, {scale:1.3, opacity:0, ease: Power3.easeIn}, '-=1') 
           }
-          //анимация для страницы категорий
-          else if(oldId=='categories') {
+        }
+        //анимация для страницы категорий
+        else if(oldId=='categories') {
+          if(inScroll == true) {
+            exitAnimation = exitAnimation2.play();
+          } else {
             exitAnimation = new TimelineMax({onComplete:function(){timerStart();deferred.resolve()}})
-            .staggerTo(".categories-block__container", 0.5, {opacity:0, yPercent: 50, ease: Power3.easeIn, stagger: {from: 'end', amount: 0.5}});
+              .staggerTo(".categories-block__container", 0.5, {opacity:0, yPercent: 50, ease: Power3.easeIn, stagger: {from: 'end', amount: 0.5}});
           }
-          //анимация для страницы превью
-          else if(oldId == 'projectPreview') {
+        }
+        //анимация для страницы превью
+        else if(oldId == 'projectPreview') {
+          if(inScroll == true) {
+            exitAnimation = exitAnimation2.play();
+          } else {
             exitAnimation = new TimelineMax({onComplete:function(){timerStart();deferred.resolve()}})
               .to('.project-preview__image .project-preview__link', 1, {xPercent: 100, opacity: 0, ease: Power3.easeIn})
               .staggerTo('.project-preview__item', 0.7, {x: -200, opacity: 0, ease: Power3.easeIn, stagger: {amount: 0.3, from: 'end'}}, 0, '-=1')
           }
-          //для страниц проектов
-          else if(pageId=='project1' || pageId=='project3') {
-            scrollbarAnimation = new TimelineMax({paused: true})
-                .to('.scrollbar-track-y .scrollbar-thumb', 1, {opacity: 0, ease: Power3.easeOut})
-            if(scrollbar.offset.y == 0) {
-              scrollbarAnimation.play();
-              exitStart();
-            } else {
-              scrollbarAnimation.play();
+        }
+        //для страниц проектов
+        else if(pageId=='project1' || pageId=='project3') {
+          if(inScroll == true) {
+            if(oldId == 'project1') {
+              exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
+              .to('.project__container, .project__content', 0.5, {opacity: 0, ease: Power1.easeIn})
+              .to('.project__head, .label-item__container, .label-item__title', 0.5, {css:{backgroundColor: '#fff'}, ease: Power1.easeIn}, '-=0.5')
+            } 
+            else if(oldId == 'project3') {
+              exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
+              .to('.page-block', 0.5, {opacity: 0, ease: Power1.easeIn})
+              .to('.label-item__container, .label-item__title', 0.5, {css:{backgroundColor: '#fff'}, ease: Power1.easeIn}, '-=0.5')
+              .to('.nav-btn__item', 0.5, {css:{backgroundColor: '#000'}, ease: Power1.easeIn}, '-=0.5')
+            }
+          } else {
+            $scrollThumb = $('.scrollbar-track-y .scrollbar-thumb');
+            scrollbarAnimation = new TimelineMax()
+              .to($scrollThumb, 1, {opacity: 0, ease: Power2.easeOut})
+            if(scrollbar.offset.y !== 0) {
               scrollbar.scrollTo(0, 0, 1000, {
-                callback: () => exitStart(),
+                callback: () => scrollbar.destroy(),
                 easing: easing.easeFromTo
               });
-            }
-            function exitStart() {
+            } else {
               scrollbar.destroy();
-              if(pageId=='project1') {
-                project1backgroundAnimation.stop();
-                exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
-                .to('.project__head, .label-item__container, .label-item__title', 1, {css: {backgroundColor: '#fff'}, ease: Power3.easeIn})
-                .to('.project__container, .project__content', 1, {opacity: 0, ease: Power3.easeIn}, '-=1')
-                .to('.project1__scene', 1, {scale: 0.8, ease: Power3.easeIn}, '-=1')
-              }
-              else if(oldId == 'project3') {
-                exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
-                .set('.project3__overlay', {autoAlpha: 1})
-                .to('.label-item__title, .label-item__container', 0.5, {css:{backgroundColor: '#fff'}})
-                .to('.nav-btn__item', 0.5, {css:{backgroundColor: '#000'}}, '-=0.5')
-                .to('.project3 .hidden-item', 0.5, {opacity:0, ease: Power2.easeIn}, '-=0.5')
-                .fromTo('.project3__overlay-item:first-child span', 0.5, {xPercent: -100, yPercent:100}, {yPercent:0, ease: Power3.easeIn}, '-=0.5')
-                .fromTo('.project3__overlay-item:last-child span', 0.5, {xPercent: -100, yPercent:-100}, {yPercent:0, ease: Power3.easeIn}, '-=0.5')
-                .set('.project3 .hidden-item, .project3__background', {autoAlpha: 0})
-                .to('.project3__overlay-item:first-child span', 0.5, {yPercent:-100, opacity:0, ease: Power3.easeIn})
-                .to('.project3__overlay-item:last-child span', 0.5, {yPercent:100, opacity:0, ease: Power3.easeIn}, '-=0.5')        
-              }
+            }
+            //для первого проекта
+            if(pageId=='project1') {
+              project1backgroundAnimation.stop();
+              exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
+              .to('.project__head, .label-item__container, .label-item__title', 1, {css: {backgroundColor: '#fff'}, ease: Power3.easeIn})
+              .to('.project__container, .project__content', 1, {opacity: 0, ease: Power3.easeIn}, '-=1')
+              .to('.project1__scene', 1, {scale: 0.8, ease: Power3.easeIn}, '-=1')
+            }
+            //для второго проекта
+            else if(oldId == 'project3') {
+              exitAnimation = new TimelineMax({onComplete:function(){deferred.resolve();timerStart()}})
+              .set('.project3__overlay', {autoAlpha: 1})
+              .to('.label-item__title, .label-item__container', 0.5, {css:{backgroundColor: '#fff'}})
+              .to('.nav-btn__item', 0.5, {css:{backgroundColor: '#000'}}, '-=0.5')
+              .to('.project3 .hidden-item', 0.5, {opacity:0, ease: Power2.easeIn}, '-=0.5')
+              .fromTo('.project3__overlay-item:first-child span', 0.5, {xPercent: -100, yPercent:100}, {yPercent:0, ease: Power3.easeIn}, '-=0.5')
+              .fromTo('.project3__overlay-item:last-child span', 0.5, {xPercent: -100, yPercent:-100}, {yPercent:0, ease: Power3.easeIn}, '-=0.5')
+              .set('.project3 .hidden-item, .project3__background', {autoAlpha: 0})
+              .to('.project3__overlay-item:first-child span', 0.5, {yPercent:-100, opacity:0, ease: Power3.easeIn})
+              .to('.project3__overlay-item:last-child span', 0.5, {yPercent:100, opacity:0, ease: Power3.easeIn}, '-=0.5')        
             }
           }
-          //анимация для остальных
-          else {
-            deferred.resolve();
-            logoToggle(true);
-          }
+        }
+        //анимация для остальных
+        else {
+          deferred.resolve();
         }
       }
       return deferred.promise;
