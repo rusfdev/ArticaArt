@@ -8,6 +8,7 @@
 }
 .categories-block {
   font-size: 25px;
+  height: 50%;
   &__container {
     height: 100%;
     position: relative;
@@ -58,6 +59,7 @@
 }
 @media screen and(max-width:768px) {
   .categories-block {
+    height: 33.33%;
     &__container {
       border: 1px solid $border-color;
     }

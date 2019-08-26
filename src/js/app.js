@@ -88,18 +88,29 @@ function resizeEvents(type) {
   $container.css('height', displayHeight);
   $pageContainer.css('height', displayHeight);
 
-  var innerHeight = $inner.height();
+  var innerHeight = $inner.height(),
+      innerWidth = $inner.width();
 
   $label.each(function() {
     var $el = $(this),
         elHeight = $el.height(),
         elYpos = $inner.offset().top - $container.offset().top + innerHeight - elHeight;
     if(type == 'fast') {
-      var anim = new TimelineMax().set($el, {y: elYpos});
+      let anim = new TimelineMax().set($el, {y: elYpos});
     } else {
-      var anim = new TimelineMax().to($el, 1.5, {y: elYpos, ease: Power3.easeInOut});
+      let anim = new TimelineMax().to($el, 1.5, {y: elYpos, ease: Power3.easeInOut});
     }
   })
+
+  if(pageW<=768) {
+    if(pageId=='projectPreview') {
+      var $t = $('.project-preview__description'),
+          lw = $('#' + dataNewLabel).width(),
+          mw = innerWidth-lw;
+
+      $t.css('max-width', mw)
+    }
+  }
 
   $('.lazy').each(function() {
     imagesResize($(this))
@@ -186,14 +197,14 @@ function scrollbarFunction() {
     if(pageId=='project1') {
       if(scrollY < displayHeight) {
         var parralaxAnimation = new TimelineMax()
-          .set($('.project__layer:first-child .project__layer-container'), {y: -(scrollY - scrollY/1.25), x:(scrollY - scrollY/1.025)})
-          .set($('.project__layer:last-child .project__layer-container'), {y: -(scrollY - scrollY/1.15), x:-(scrollY - scrollY/1.025)})
+          .set($('.project__layer:first-child .project__layer-container'), {y: -(scrollY - scrollY/1.4), x:(scrollY - scrollY/1.05)})
+          .set($('.project__layer:last-child .project__layer-container'), {y: -(scrollY - scrollY/1.25), x:-(scrollY - scrollY/1.05)})
       }
     } else if(pageId=='project3') {
       if(scrollY < displayHeight) {
         var parralaxAnimation = new TimelineMax()
-          .set($('.project__layer:first-child .project__layer-container'), {y: -(scrollY - scrollY/1.25)})
-          .set($('.project__layer:last-child .project__layer-container'), {y: -(scrollY - scrollY/1.15)})
+          .set($('.project__layer:first-child .project__layer-container'), {y: -(scrollY - scrollY/1.15), x:-(scrollY - scrollY/1.015)})
+          .set($('.project__layer:last-child .project__layer-container'), {y: -(scrollY - scrollY/1.075), x:(scrollY - scrollY/1.015)})
       }
       var x1 = scrollbar.size.container.height - scrollY,
           x2 = scrollbar.track.yAxis.thumb.offset + scrollbar.track.yAxis.thumb.realSize/2;
@@ -273,7 +284,6 @@ function scrollbarFunction() {
     scrollOld = scrollY;
   }
 }
-
 function mainVideo() {
   var $videoContainer = $('.video-wrapper'),
   videoPath = $videoContainer.data('path');
