@@ -9,7 +9,7 @@
 	}
 }
 
-@include font-face("SFProText", "../fonts/SFPro/SF-Pro-Text-Regular");
+@include font-face("SFProText", "../fonts/SFPro/SF-Pro-Text-Regular", 400);
 @include font-face("SFProText", "../fonts/SFPro/SF-Pro-Text-Bold", 700);
 @include font-face("Geometos", "../fonts/Geometos/Geometos");
 

@@ -11,7 +11,8 @@ html
   body(style='overflow: hidden')
     include ../blocks/preloader
     .page-wrapper(style='visibility:hidden')
-      include ../blocks/fixed
+      include ../blocks/header
+      include ../blocks/pagination
       .page-container
         include ../blocks/labels
         block content

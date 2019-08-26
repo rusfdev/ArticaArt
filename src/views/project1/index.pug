@@ -3,18 +3,20 @@ block content
   main.main#barba-wrapper
     .barba-container#project1(data-project data-label='identity')
       .page-block.project.project1
-        .project__head
+        .project__head.project1__head
           .container.container_display-size
             .container__inner
               .container__content.project__container
                 span.project__description.hidden-item.t-size-24 Фирменный стиль сети дайненров R66 ROUTE
-                #scene.project1__scene
-                  .project1__layer(data-depth="0.03")
-                    .project1__layer-container
+                #scene.project__scene.project1__scene
+                  .project__layer.project1__layer(data-depth="0.03")
+                    .project__layer-container.project1__layer-container
                       img(data-src='img/images/r66logo.png', alt="").lazy
-                  .project1__layer(data-depth="0.05")
-                    .project1__layer-container
+                  .project__layer.project1__layer(data-depth="0.05")
+                    .project__layer-container.project1__layer-container
                       img(data-src='img/images/girl.png', alt="").lazy
         .project__content
+          .container.container_display-size
+            span content
           .container.container_display-size
             span content

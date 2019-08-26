@@ -4,12 +4,12 @@ block content
   main.main#barba-wrapper
     .barba-container#main
       .page-block.main-page
+        .main-page__background
+          #scene.main-page__scene
+            .main-page__scene-layer.cover-box(data-depth="0.15")
+              img(data-src="img/images/main-background.jpg", alt="").lazy
+              .video-wrapper(data-path='videos/optimazed.mp4')
         .container.container_display-size
-          .main-page__background
-            #scene.main-page__scene
-              .main-page__scene-layer.cover-box(data-depth="0.15")
-                img(data-src="img/images/main-background.jpg", alt="").lazy
-                .video-wrapper(data-path='videos/optimazed.mp4')
           .container__inner
             .container__content.main-page__container
               .logo.logo_main
@@ -46,6 +46,6 @@ block content
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.301 21.334" id="item"> <path d="M16.538 15.942a7.857 7.857 0 0 1-5.593 2.314c-4.3 0-7.787-3.398-7.787-7.589 0-4.19 3.487-7.588 7.787-7.588 2.196 0 4.177.888 5.593 2.314l2.763-1.603A11.028 11.028 0 0 0 10.945 0C4.9.001 0 4.777 0 10.668c0 5.891 4.9 10.666 10.945 10.666 3.354 0 6.35-1.474 8.356-3.79z"></path> </svg >
                   .logo__item
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37.588 31.492" id="item"> <path d="M18.794 7.355l14.404 24.137h4.39L18.793 0 0 31.492h4.39L18.793 7.355z"></path></svg>
-              a(href="/categories/").ajax-link.main-page__scroll
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.267 36.4" stroke='none' stroke="none" ><path d="M12.133 0C5.463 0 0 5.464 0 12.133v12.134C0 30.937 5.464 36.4 12.133 36.4c6.67 0 12.134-5.464 12.134-12.133V12.096C24.267 5.426 18.803 0 12.133 0zm10.4 24.229c0 5.728-4.672 10.4-10.4 10.4-5.727 0-10.4-4.71-10.4-10.4V12.096c0-5.69 4.673-10.4 10.4-10.4 5.728 0 10.4 4.672 10.4 10.4z"></path></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7.364 14" stroke="none" id="arrow"> <path d="M4.182.5a.5.5 0 0 0-1 0zm-.854 13.354a.5.5 0 0 0 .708 0l3.182-3.182a.5.5 0 1 0-.708-.708l-2.828 2.829L.854 9.965a.5.5 0 1 0-.708.707zM3.182.5v13h1V.5z"></path> </svg>
+            a(href="/categories/").ajax-link.main-page__scroll
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.267 36.4" stroke='none' stroke="none" ><path d="M12.133 0C5.463 0 0 5.464 0 12.133v12.134C0 30.937 5.464 36.4 12.133 36.4c6.67 0 12.134-5.464 12.134-12.133V12.096C24.267 5.426 18.803 0 12.133 0zm10.4 24.229c0 5.728-4.672 10.4-10.4 10.4-5.727 0-10.4-4.71-10.4-10.4V12.096c0-5.69 4.673-10.4 10.4-10.4 5.728 0 10.4 4.672 10.4 10.4z"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7.364 14" stroke="none" id="arrow"> <path d="M4.182.5a.5.5 0 0 0-1 0zm-.854 13.354a.5.5 0 0 0 .708 0l3.182-3.182a.5.5 0 1 0-.708-.708l-2.828 2.829L.854 9.965a.5.5 0 1 0-.708.707zM3.182.5v13h1V.5z"></path> </svg>
