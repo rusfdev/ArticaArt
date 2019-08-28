@@ -328,6 +328,8 @@
     }
     &__description {
       padding-left: 20px;
+      margin-left: 0;
+      margin-right: -0.08em;
       br {
         display: none;
       }
@@ -360,30 +362,18 @@
   .project-preview {
     &__title {
       font-size: 38px;
-      margin-top: 12px;
     }
     &__line {
       max-width: 100px;
+      margin: 5px 0 7px 0;
     }
   }
   .project {
     &__text {
-      margin-top: 50px;
+
     }
-  }
-}
-@media screen and(max-width:360px) {
-  .project-preview {
-    &__title {
-      font-size: 38px;
-    }
-    &__line {
-      margin: 7px 0 10px 0;
-    }
-  }
-  .project {
-    &__text {
-      margin-top: 25px;
+    &__description {
+      margin-bottom: -0.15em;
     }
   }
 }

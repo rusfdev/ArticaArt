@@ -362,6 +362,7 @@
       .label-item__title {
         flex-direction: column;
         padding-bottom: 0;
+        margin-bottom: -0.15em;
       }
     }
   }
@@ -429,9 +430,7 @@
   .scrollbar-track-y {
     width: 9px;
   }
-}
-@media screen and(max-width:360px) {
-  .label-ind {
-    font-size: 12px;
+  .logo_small .logo__link {
+    font-size: 7px;
   }
 }

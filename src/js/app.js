@@ -2,6 +2,7 @@ import Barba from "barba.js";
 import device from 'current-device';
 import Scrollbar from 'smooth-scrollbar';
 import easing from '../libs/easing/easing';
+import Hammer from 'hammerjs';
 import bgVideo from '../libs/bg-video/bgvideo';
 import TweenMax from "gsap/TweenMax";
 import Lazy from "jquery-lazy";
@@ -58,26 +59,53 @@ var $document = $(document),
     scrollbar,
     scrollY;
 
-
-$document.ready(function() {
-  nav();
-  barba();
-  scroll();
-});
-
 window.addEventListener('load', 
   function() {
+    nav();
+    barba();
+    siteNavEvents();
     pageEnterAnimation(true);
 }, false);
 window.addEventListener('resize', function(){
   resizeEvents('fast');
 });
 
+//click actions
+$document.on('click', '.ajax-link', function(e) {
+  e.preventDefault();
+  var $link = $(this);
+  
+  if($link.hasClass('index-link')) {
+    logoToggle(false);
+    if(!$barbaContainer.hasAttr('data-project')) {
+      navToggle(false);
+    }
+  } else if($link.hasClass('pagination__link')) {
+    $link.addClass('onload');
+  } else if($link.hasClass('project-link')) {
+    navToggle(false);
+  }
+  //labels
+  if(dataOldLabel !== false) {
+    if($link.attr('data-label')) {
+      if(dataOldLabel !== $link.data('label')) {
+        labelToggle(dataOldLabel, false);
+      }
+    } else {
+      labelToggle(dataOldLabel, false);
+      dataOldLabel = false;
+      dataNewLabel = false;
+    }
+  }
+})
+
+
+
+
 //functions
 $.fn.hasAttr = function(name) {  
   return this.attr(name) !== undefined;
 };
-
 function resizeEvents(type) {
   $container = $('.container_display-size'),
   $inner = $('.container__inner'),
@@ -143,6 +171,7 @@ function headerView(view) {
     headerStyleAnimation.stop();
     if(exitAnimationProgress==true && inScroll !== true) {
       if(headerIsVisible == true) {
+        console.log('exit1')
         headerStyleAnimation = new TimelineMax()
           .to($header, 1, {y: 0, ease: Power2.easeIn})
           .to($header.find('.header__background'), 1, {opacity: 0, ease: Power2.easeIn}, '-=1')
@@ -150,14 +179,14 @@ function headerView(view) {
           .to('.nav-btn__item', 1, {css:{backgroundColor: '#000'}, ease: Power2.easeIn}, '-=1')
           .to('.logo_small svg', 1, {css:{fill: '#000'}, ease: Power2.easeIn}, '-=1')
       } else {
+        console.log('exit2')
+        headerIsVisible = true;
         headerStyleAnimation = new TimelineMax()
           .set($header.find('.header__background'), {opacity: 0})
           .set($header.find('.header__shadow'), {opacity: 0})
           .set('.nav-btn__item', {css:{backgroundColor: '#000'}})
           .set('.logo_small svg', {css:{fill: '#000'}})
-          .to($header, 1, {y: 0, ease: Power1.easeOut, onComplete: function() {
-            headerIsVisible = true;
-        }})
+          .to($header, 1, {y: 0, ease: Power1.easeOut})
       }
     } else {
       headerStyleAnimation = new TimelineMax()
@@ -193,6 +222,7 @@ function scrollbarFunction() {
   }
   function listener(status) {
     scrollY = scrollbar.offset.y;
+    console.log(headerIsVisible)
 
     if(pageId=='project1') {
       if(scrollY < displayHeight) {
@@ -204,7 +234,7 @@ function scrollbarFunction() {
       if(scrollY < displayHeight) {
         var parralaxAnimation = new TimelineMax()
           .set($('.project__layer:first-child .project__layer-container'), {y: -(scrollY - scrollY/1.15), x:-(scrollY - scrollY/1.015)})
-          .set($('.project__layer:last-child .project__layer-container'), {y: -(scrollY - scrollY/1.075), x:(scrollY - scrollY/1.015)})
+          .set($('.project__layer:last-child .project__layer-container'), {y: -(scrollY - scrollY/1.1), x:(scrollY - scrollY/1.015)})
       }
       var x1 = scrollbar.size.container.height - scrollY,
           x2 = scrollbar.track.yAxis.thumb.offset + scrollbar.track.yAxis.thumb.realSize/2;
@@ -223,65 +253,68 @@ function scrollbarFunction() {
       } 
     }
 
-    //если скролл вниз
-    if(scrollY > scrollOld) {
-      if(flag2 == false && headerIsVisible == true && scrollY>headerH) {
-        flag2 = true;
-        headerToggleAnimation.stop();
-        headerToggleAnimation.eventCallback("onComplete", null);
-        headerToggleAnimation = new TimelineMax()
-        .to($header, 0.5, {y: -headerH, ease: Sine.easeIn, 
-          onComplete: function() {
-            headerIsVisible = false;
-          }
-        })
-        .to($header.find('.header__shadow'), 0.5, {opacity: 0, ease: Sine.easeIn}, '-=0.5')
-      }
-    }
-    //если скролл вверх
-    else if(exitAnimationProgress!==true) {
-      if(flag2 == true && scrollY>displayHeight && headerIsVisible == false) {
-        flag2 = false;
-        headerToggleAnimation.stop();
-        headerToggleAnimation.eventCallback("onComplete", null);
-        headerToggleAnimation = new TimelineMax()
-        .to($header, 0.5, {y: 0, ease: Power3.easeOut, 
-          onStart: function() {
-            headerView('new');
-          },
-          onComplete: function() {
-            headerIsVisible = true;
-          }
-        })
-        .to($header.find('.header__shadow'), 0.5, {opacity: 1, ease: Power3.easeOut}, '-=0.5')
-      }
-      if(flag2 == false && headerIsVisible == true && scrollY<displayHeight && scrollY>headerH) {
-        flag2 = true;
-        headerToggleAnimation = new TimelineMax()
-          .to($header, 0.5, {y: -headerH, ease: Power2.easeIn, 
+
+    if(exitAnimationProgress!==true) {
+      //если скролл вниз
+      if(scrollY > scrollOld) {
+        if(flag2 == false && headerIsVisible == true && scrollY>headerH) {
+          flag2 = true;
+          headerToggleAnimation.stop();
+          headerToggleAnimation.eventCallback("onComplete", null);
+          headerToggleAnimation = new TimelineMax()
+          .to($header, 0.5, {y: -headerH, ease: Sine.easeIn, 
             onComplete: function() {
               headerIsVisible = false;
-              headerView('default');
             }
           })
-          .to($header.find('.header__shadow'), 0.5, {opacity: 0, ease: Power2.easeIn}, '-=0.5')
+          .to($header.find('.header__shadow'), 0.5, {opacity: 0, ease: Sine.easeIn}, '-=0.5')
+        }
       }
-      if(scrollY<headerH) {
-        flag2 = false;
-        headerToggleAnimation.stop();
-        headerToggleAnimation.eventCallback("onComplete", null);
-        headerToggleAnimation = new TimelineMax()
-        .to($header, 0.5, {y: 0, ease: Power3.easeOut, 
-          onStart: function() {
-            headerView('default');
-          },
-          onComplete: function() {
-            headerIsVisible = true;
-          }
-      })
+      //если скролл вверх
+      else {
+        if(flag2 == true && scrollY>displayHeight && headerIsVisible == false) {
+          flag2 = false;
+          headerToggleAnimation.stop();
+          headerToggleAnimation.eventCallback("onComplete", null);
+          headerToggleAnimation = new TimelineMax()
+          .to($header, 0.5, {y: 0, ease: Power3.easeOut, 
+            onStart: function() {
+              headerView('new');
+            },
+            onComplete: function() {
+              headerIsVisible = true;
+            }
+          })
+          .to($header.find('.header__shadow'), 0.5, {opacity: 1, ease: Power3.easeOut}, '-=0.5')
+        }
+        if(flag2 == false && headerIsVisible == true && scrollY<displayHeight && scrollY>headerH) {
+          flag2 = true;
+          headerToggleAnimation = new TimelineMax()
+            .to($header, 0.5, {y: -headerH, ease: Power2.easeIn, 
+              onComplete: function() {
+                headerIsVisible = false;
+                headerView('default');
+              }
+            })
+            .to($header.find('.header__shadow'), 0.5, {opacity: 0, ease: Power2.easeIn}, '-=0.5')
+        }
+        if(scrollY<headerH) {
+          flag2 = false;
+          headerToggleAnimation.stop();
+          headerToggleAnimation.eventCallback("onComplete", null);
+          headerToggleAnimation = new TimelineMax()
+          .to($header, 0.5, {y: 0, ease: Power3.easeOut, 
+            onStart: function() {
+              headerView('default');
+            },
+            onComplete: function() {
+              headerIsVisible = true;
+            }
+        })
+        }
       }
+      scrollOld = scrollY;
     }
-    scrollOld = scrollY;
   }
 }
 function mainVideo() {
@@ -298,7 +331,6 @@ function mainVideo() {
     showPausePlay: false
   });
 }
-//split text
 function splitText() {
   let $els = document.querySelectorAll(".js-split");
   [].forEach.call($els, function(el) {
@@ -308,7 +340,6 @@ function splitText() {
     }
   })
 }
-//parralax
 function parralaxProject() {
   if($('html').hasClass('desktop')) {
     //init parralax
@@ -418,7 +449,6 @@ function onCompleteAnimation(type) {
   inScroll = false;
   enterAnimationProgress = false;
 }
-
 function pageEnterAnimation(firstAnimation) {
   $barbaContainer = $('.barba-container');
   pageId = $barbaContainer.attr('id');
@@ -600,73 +630,76 @@ function pageEnterAnimation(firstAnimation) {
     }
   }
 }
-$document.on('click', '.ajax-link', function(e) {
-  e.preventDefault();
-  var $link = $(this);
-  
-  if($link.hasClass('index-link')) {
-    logoToggle(false);
-    if(!$barbaContainer.hasAttr('data-project')) {
-      navToggle(false);
-    }
-  } else if($link.hasClass('pagination__link')) {
-    $link.addClass('onload');
-  } else if($link.hasClass('project-link')) {
-    navToggle(false);
-  }
-  //labels
-  if(dataOldLabel !== false) {
-    if($link.attr('data-label')) {
-      if(dataOldLabel !== $link.data('label')) {
-        labelToggle(dataOldLabel, false);
-      }
-    } else {
-      labelToggle(dataOldLabel, false);
-      dataOldLabel = false;
-      dataNewLabel = false;
-    }
-  }
-})
-
-function scroll() {
-  var h,
-      $link,
+function siteNavEvents() {
+  var $link,
+      Event,
+      hrefAdress,
+      $touchArea = document.querySelector('.page-wrapper'),
       pagesCount = $('.pagination__link').length;
+
+  var touchEvents = new Hammer.Manager($touchArea);
+  var swipe = new Hammer.Swipe();
+  touchEvents.add(swipe); 
+
+  touchEvents.on("swipeleft swiperight swipeup swipedown", function(event) {
+    Event = event.type;
+    eventChecking();
+  });
+
   $(window).on('wheel', function(event){
-    if(exitAnimationProgress==false) {
-      if(!$barbaContainer.hasClass('project')) {
-        if(pageId=='main' && !enterAnimationProgress) {
-          if(event.originalEvent.deltaY > 0){
-            $link = $('#main .ajax-link');
+    Event = event;
+    eventChecking();
+  });
+
+  function scrollCheck() {
+    if(Event.originalEvent === undefined) {
+      return false;
+    } else {
+      if(Event.originalEvent.deltaY > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  function eventChecking() {
+    if(!exitAnimationProgress) {
+      if(pageId=='main' && !enterAnimationProgress) {
+        if(scrollCheck() || Event == 'swipeup' || Event == 'swipeleft'){
+          $link = $('#main .ajax-link');
+          goToPage();
+        }
+      } else if(pageId == 'projectPreview' || pageId == 'categories') {
+        var index = $('.pagination__link.active').parent().index();
+        if(scrollCheck() || Event == 'swipeup' || Event == 'swipeleft'){
+          if(index + 1 < pagesCount) {
+            $link = $('.pagination__item').eq(index + 1).find('.pagination__link');
             goToPage();
           }
-        } else if(pageId == 'projectPreview' || pageId == 'categories') {
-          var index = $('.pagination__link.active').parent().index();
-          if(event.originalEvent.deltaY > 0){
-            if(index + 1 < pagesCount) {
-              $link = $('.pagination__item').eq(index + 1).find('.pagination__link');
-              goToPage();
-            }
+        } else {
+          if(index + 1 > 1) {
+            $link = $('.pagination__item').eq(index - 1).find('.pagination__link');
+            goToPage();
           } else {
-            if(index + 1 > 1) {
-              $link = $('.pagination__item').eq(index - 1).find('.pagination__link');
-              goToPage();
-            } else {
-              $link = $('.logo__link');
-              goToPage();
-            }
+            $link = $('.logo__link');
+            goToPage();
           }
         }
       }
     }
-  });
+  }
+  
   function goToPage() {
     $link.trigger('click');
-    h = $link.attr('href');
-    Barba.Pjax.goTo(h);
+    hrefAdress = $link.attr('href');
+    Barba.Pjax.goTo(hrefAdress);
     inScroll = true;
   }
 }
+
+
+
 function barba() {
   var $newPage,
       $oldPage;
