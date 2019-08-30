@@ -11,9 +11,8 @@
     position: absolute;
     right: 0;
     top: 0;
-    max-width: 100%;
-    top: 50%;
-    transform: translateY(-50%);
+    perspective: 1000px;
+    transform-style: preserve-3d;
   }
   &__link {
     height: 100%;
@@ -302,10 +301,7 @@
     &__image {
       width: 100%;
       height: auto;
-      transform: translateY(0) !important;
       position: relative;
-      top: auto;
-      right: auto;
     }
     .lazy {
       height: auto;

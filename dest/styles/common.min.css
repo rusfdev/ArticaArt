@@ -2138,11 +2138,10 @@ p {
   position: absolute;
   right: 0;
   top: 0;
-  max-width: 100%;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-      -ms-transform: translateY(-50%);
-          transform: translateY(-50%); }
+  -webkit-perspective: 1000px;
+          perspective: 1000px;
+  -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d; }
 
 .project-preview__link {
   height: 100%; }
@@ -2389,12 +2388,7 @@ p {
   .project-preview__image {
     width: 100%;
     height: auto;
-    -webkit-transform: translateY(0) !important;
-        -ms-transform: translateY(0) !important;
-            transform: translateY(0) !important;
-    position: relative;
-    top: auto;
-    right: auto; }
+    position: relative; }
   .project-preview .lazy {
     height: auto;
     width: 100%; }

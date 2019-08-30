@@ -449,6 +449,128 @@ function onCompleteAnimation(type) {
   inScroll = false;
   enterAnimationProgress = false;
 }
+function siteNavEvents() {
+  var $link,
+      Event,
+      hrefAdress,
+      $touchArea = document.querySelector('.page-wrapper'),
+      pagesCount = $('.pagination__link').length;
+
+  var touchEvents = new Hammer.Manager($touchArea);
+  var swipe = new Hammer.Swipe();
+  touchEvents.add(swipe); 
+
+  touchEvents.on("swipeleft swiperight swipeup swipedown", function(event) {
+    Event = event.type;
+    eventChecking();
+  });
+
+  $(window).on('wheel', function(event){
+    Event = event;
+    eventChecking();
+  });
+
+  function scrollCheck() {
+    if(Event.originalEvent === undefined) {
+      return false;
+    } else {
+      if(Event.originalEvent.deltaY > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  function eventChecking() {
+    if(!exitAnimationProgress) {
+      if(pageId=='main' && !enterAnimationProgress) {
+        if(scrollCheck() || Event == 'swipeup' || Event == 'swipeleft'){
+          $link = $('#main .ajax-link');
+          goToPage();
+        }
+      } else if(pageId == 'projectPreview' || pageId == 'categories') {
+        var index = $('.pagination__link.active').parent().index();
+        if(scrollCheck() || Event == 'swipeup' || Event == 'swipeleft'){
+          if(index + 1 < pagesCount) {
+            $link = $('.pagination__item').eq(index + 1).find('.pagination__link');
+            goToPage();
+          }
+        } else {
+          if(index + 1 > 1) {
+            $link = $('.pagination__item').eq(index - 1).find('.pagination__link');
+            goToPage();
+          } else {
+            $link = $('.logo__link');
+            goToPage();
+          }
+        }
+      }
+    }
+  }
+  
+  function goToPage() {
+    $link.trigger('click');
+    hrefAdress = $link.attr('href');
+    Barba.Pjax.goTo(hrefAdress);
+    inScroll = true;
+  }
+}
+function hoverAnimations() {
+  var $imageProject = $('.project-preview__image'), 
+      anim,
+      mouseEvents,
+      touchEvents,
+      flag = true;
+
+  $imageProject.on('mousemove mouseleave touchstart click touchend', function(event) {
+    var $target = $(this),
+        posT = $target.offset().top,
+        posL = $target.offset().left,
+        h = $target.height(),
+        w = $target.width(),
+        halfHeight = h/2,
+        halfWidth = w/2,
+        x, y;
+    
+    //если событие мыши
+    if(exitAnimationProgress!==true) {
+      if(event.type == 'mousemove' && flag == true && touchEvents!==true) {
+        //не чаще чем раз в 100мс
+        flag = false;
+        setTimeout(function() {
+          flag = true;
+        }, 100)
+        console.log('1')
+  
+        x = Math.ceil(((event.clientX - posL)-halfWidth)/(1+((w*w)/7000))),
+        y = Math.ceil(-((event.clientY - posT)-halfHeight)/(1+((h*h)/7000)));
+  
+        anim = new TimelineMax()
+        .to($imageProject.find('.project-preview__link'), 0.5, {rotationX: y, rotationY: x, ease: Power3.easeOut})
+      } else if(event.type == 'touchstart') {
+        touchEvents = true;
+  
+        x = Math.ceil((((event.touches[0].clientX - posL)-halfWidth)/(1+((w*w)/7000)))),
+        y = Math.ceil(-((((event.touches[0].clientY - posT)-halfHeight)/(1+((h*h)/7000)))));
+  
+        anim = new TimelineMax()
+        .to($imageProject.find('.project-preview__link'), 0.5, {rotationX: y, rotationY: x, ease: Power3.easeOut})
+      } else if(event.type == 'touchend' || event.type == 'mouseleave') {
+        anim = new TimelineMax()
+        .to($imageProject.find('.project-preview__link'), 0.5, {rotationX: 0, rotationY: 0, ease: Power3.easeOut, onComplete: function() {
+          touchEvents = false;
+        }})
+      } else if(event.type == 'click') {
+        anim = new TimelineMax()
+        .to($imageProject.find('.project-preview__link'), 1, {rotationX: 0, rotationY: 0, ease: Power3.easeIn, onComplete: function() {
+          touchEvents = false;
+        }})
+      }
+    }
+  })
+}
+
 function pageEnterAnimation(firstAnimation) {
   $barbaContainer = $('.barba-container');
   pageId = $barbaContainer.attr('id');
@@ -586,10 +708,11 @@ function pageEnterAnimation(firstAnimation) {
     }
     //анимация для превью страниц
     else if(pageId=='projectPreview') {
+      hoverAnimations();
       enterAnimation = new TimelineMax({onComplete:function(){onCompleteAnimation()}})
       .set('.page-block', {autoAlpha: 1})
       .fromTo('.project-preview__container', 1, {opacity: 0}, {opacity: 1, ease: Power2.easeInOut})
-      .fromTo('.project-preview__image .project-preview__link', 1.5, {xPercent: -50}, {xPercent: 0, ease: Power3.easeOut}, '-=1')
+      .fromTo('.project-preview__image', 1.5, {xPercent: -50}, {xPercent: 0, ease: Power3.easeOut}, '-=1')
       .fromTo('.project-preview__title', 1.5, {yPercent: -50}, {yPercent: 0, ease: Power3.easeOut}, '-=1.5')
       .fromTo('.project-preview__line', 1.5, {xPercent: 50}, {xPercent: 0, ease: Power3.easeOut}, '-=1.5')
       .fromTo('.project-preview__description', 1.5, {xPercent: -100}, {xPercent: 0, ease: Power3.easeOut}, '-=1.5')
@@ -628,73 +751,6 @@ function pageEnterAnimation(firstAnimation) {
       .to('.project3__overlay-item span', 0.5, {xPercent: -200, ease: Power3.easeOut}, '-=0.5')
       .set('.project3__overlay', {autoAlpha: 0})
     }
-  }
-}
-function siteNavEvents() {
-  var $link,
-      Event,
-      hrefAdress,
-      $touchArea = document.querySelector('.page-wrapper'),
-      pagesCount = $('.pagination__link').length;
-
-  var touchEvents = new Hammer.Manager($touchArea);
-  var swipe = new Hammer.Swipe();
-  touchEvents.add(swipe); 
-
-  touchEvents.on("swipeleft swiperight swipeup swipedown", function(event) {
-    Event = event.type;
-    eventChecking();
-  });
-
-  $(window).on('wheel', function(event){
-    Event = event;
-    eventChecking();
-  });
-
-  function scrollCheck() {
-    if(Event.originalEvent === undefined) {
-      return false;
-    } else {
-      if(Event.originalEvent.deltaY > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
-  function eventChecking() {
-    if(!exitAnimationProgress) {
-      if(pageId=='main' && !enterAnimationProgress) {
-        if(scrollCheck() || Event == 'swipeup' || Event == 'swipeleft'){
-          $link = $('#main .ajax-link');
-          goToPage();
-        }
-      } else if(pageId == 'projectPreview' || pageId == 'categories') {
-        var index = $('.pagination__link.active').parent().index();
-        if(scrollCheck() || Event == 'swipeup' || Event == 'swipeleft'){
-          if(index + 1 < pagesCount) {
-            $link = $('.pagination__item').eq(index + 1).find('.pagination__link');
-            goToPage();
-          }
-        } else {
-          if(index + 1 > 1) {
-            $link = $('.pagination__item').eq(index - 1).find('.pagination__link');
-            goToPage();
-          } else {
-            $link = $('.logo__link');
-            goToPage();
-          }
-        }
-      }
-    }
-  }
-  
-  function goToPage() {
-    $link.trigger('click');
-    hrefAdress = $link.attr('href');
-    Barba.Pjax.goTo(hrefAdress);
-    inScroll = true;
   }
 }
 
@@ -758,7 +814,7 @@ function barba() {
             exitAnimation = exitAnimationFast.play();
           } else {
             exitAnimation = new TimelineMax({onComplete:function(){timerStart();deferred.resolve()}})
-              .to('.project-preview__image .project-preview__link', 1, {xPercent: 100, opacity: 0, ease: Power3.easeIn})
+              .to('.project-preview__image', 1, {xPercent: 100, opacity: 0, ease: Power3.easeIn})
               .staggerTo('.project-preview__item', 0.7, {x: -200, opacity: 0, ease: Power3.easeIn, stagger: {amount: 0.3, from: 'end'}}, 0, '-=1')
           }
         }
