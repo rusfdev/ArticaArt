@@ -9,11 +9,9 @@
     <base href="http://localhost:9000/">
     <!--base(href="http://test.artica.art/")-->
   </head>
-  <body style="overflow: hidden">
-    <!--preloader-->
-    <div class="preloader" style="width:100%;position:fixed;height:100%;width:100%;top:0;left:0;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center;z-index:1000"><img class="preloader__image" src="img/preloader.gif" alt="preloader" style="width:150px;height:150px;"></div>
-    <div class="page-wrapper" style="visibility:hidden">
-      <header class="header"><span class="header__background"></span><span class="header__shadow"></span>
+  <body style="overflow:hidden">
+    <div class="page-wrapper">
+      <header class="header" style="visibility:hidden"><span class="header__background"></span><span class="header__shadow"></span>
         <div class="header__container">
           <div class="logo logo_small"><a class="logo__link ajax-link index-link" href="/">
               <div class="logo__item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37.588 31.492" id="item"><path d="M18.794 7.355l14.404 24.137h4.39L18.793 0 0 31.492h4.39L18.793 7.355z"></path></svg></div>
@@ -29,16 +27,17 @@
             </div></a>
         </div>
       </header>
-      <div class="pagination">
+      <div class="pagination" style="visibility:hidden;opacity:0"><span class="pagination__bg"></span><span class="pagination__loader"></span>
         <ul class="pagination__list">
-          <li class="pagination__item"><a class="pagination__link ajax-link" href="/categories/"><span class="dot"></span><span class="loader"><span></span></span></a></li>
-          <li class="pagination__item"><a class="pagination__link ajax-link" href="/project1preview/" data-label="identity"><span class="dot"></span><span class="loader"><span></span></span></a></li>
-          <li class="pagination__item"><a class="pagination__link ajax-link" href="/project2preview/" data-label="identity"><span class="dot"></span><span class="loader"><span></span></span></a></li>
-          <li class="pagination__item"><a class="pagination__link ajax-link" href="/project3preview/" data-label="graphic"><span class="dot"></span><span class="loader"><span></span></span></a></li>
-          <li class="pagination__item"><a class="pagination__link ajax-link" href="/project4preview/" data-label="graphic"><span class="dot"></span><span class="loader"><span></span></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="/"><span class="dot"></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="/categories/"><span class="dot"></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="/project1preview/"><span class="dot"></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="/project2preview/"><span class="dot"></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="/project3preview/"><span class="dot"></span></a></li>
+          <li class="pagination__item"><a class="pagination__link ajax-link" href="/project4preview/"><span class="dot"></span></a></li>
         </ul>
       </div>
-      <div class="page-container">
+      <div class="page-container" style="visibility:hidden">
         <div class="label-ind" id="identity">
           <div class="label-ind__container">
             <div class="label-item label-item_i">
@@ -65,7 +64,7 @@
               <div class="container container_display-size">
                 <div class="container__inner">
                   <div class="container__content project-preview__container">
-                    <div class="project-preview__image"><a class="project-preview__link cover-box cover-box_size-auto ajax-link project-link" href="/project1/" data-label="identity"><img class="lazy" data-src="img/images/image1.jpg" alt="image1"></a></div>
+                    <div class="project-preview__image hover-area"><a class="project-preview__link cover-box cover-box_size-auto ajax-link project-link hover-child" href="/project1/" data-label="identity"><img class="lazy" data-src="img/images/image1.jpg" alt="image1"></a></div>
                     <h1 class="project-preview__title project-preview__item">ROUTE 66</h1><span class="project-preview__line project-preview__item"></span>
                     <p class="project-preview__description project-preview__item t-size-36">R66 route diner style,<br> logos and prints</p>
                     <div class="project-preview__demo project-preview__item"><a class="link" href="http://route66.ru/" target="_blank">route66.ru</a></div>
