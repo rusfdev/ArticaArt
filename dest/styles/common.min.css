@@ -1963,7 +1963,8 @@ p {
     width: 100%;
     height: 100%;
     top: 0;
-    left: 0; }
+    left: 0;
+    visibility: hidden; }
   .main-page__scene {
     position: absolute;
     top: 0;
@@ -2056,9 +2057,7 @@ p {
 
 @media screen and (max-width: 1024px) {
   .main-page {
-    font-size: 3.5vw; }
-    .main-page .container_display-size {
-      padding: 60px 20px 30px 20px; } }
+    font-size: 3.5vw; } }
 
 @media screen and (max-width: 768px) {
   .main-page {
@@ -2398,7 +2397,8 @@ p {
 
 .categories-block {
   font-size: 25px;
-  height: 50%; }
+  height: 50%;
+  opacity: 0; }
   .categories-block__container {
     height: 100%;
     position: relative;

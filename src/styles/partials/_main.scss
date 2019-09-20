@@ -6,6 +6,7 @@
     height: 100%;
     top: 0;
     left: 0;
+    visibility: hidden;
   }
   &__scene {
     position: absolute;
@@ -103,9 +104,6 @@
 @media screen and(max-width:1024px) {
   .main-page {
     font-size: 3.5vw;
-    .container_display-size {
-      padding: 60px 20px 30px 20px;
-    }
   }
 }
 @media screen and(max-width:768px) {
