@@ -17,7 +17,6 @@ var $document = $(document),
     $container,
     $inner,
     $scrollThumb,
-    $label = $('.label-ind'),
     $header = $('.header'),
     headerIsVisible = true,
     pagesCount = $('.pagination__link').length,
@@ -53,8 +52,8 @@ var $document = $(document),
     //label
       labelFadeAnimation,
       labelHideAnimation,
-      dataNewLabel = false,
-      dataOldLabel = false,
+      $Label,
+      labelVisible = false,
     //paginationPreloader
     preloaderH,
     preloaderW,
@@ -95,7 +94,7 @@ var $document = $(document),
 window.addEventListener('load', 
   function() {
     newPageLoading();
-    setParams();
+    updateGlobalParams();
     paginationPreloader();
     //
     logoAnimations();
@@ -104,7 +103,7 @@ window.addEventListener('load',
     siteNavEvents();
 }, false);
 window.addEventListener('resize', function(){
-  setParams();
+  updateGlobalParams();
 });
 
 //page transitions
@@ -134,7 +133,6 @@ function barba() {
   }
   Barba.Pjax.start();     
 }
-//
 function newPageLoading() {
   $barbaContainer = $('.barba-container');
   pageId = $barbaContainer.attr('id');
@@ -165,7 +163,7 @@ function newPageLoading() {
   }
   splitText();
 }
-//анимации елементов при переходах
+//анимации СТРАНИЦ при переходах
 function transitions() {
   //если заходим на страницу
   if(enterAnimationProgress == true) {
@@ -264,7 +262,7 @@ function transitions() {
         .to('.project-preview__image', 1, {opacity:0, y:-200, ease:Power3.easeIn})
         .staggerTo($item.not('.project-preview__image'), 0.7, {opacity:0, x:-50, ease:Power3.easeIn, stagger: {amount: 0.3, from:'end'}}, 0, '-=1')
       forwardExitAnimationMobile = new TimelineMax({paused: true})
-        .staggerTo($item, 0.7, {opacity:0, x:-100, ease:Power3.easeIn, stagger: {amount: 0.3}})
+        .staggerTo($item, 0.75, {opacity:0, x:-100, ease:Power3.easeIn, stagger: {amount: 0.25}})
       backEnterAnimationDesktop = new TimelineMax({paused: true})
         .set('.page-block', {autoAlpha: 1})
         .fromTo($item, 1.5, {immediateRender:false, opacity:0}, {opacity:1, ease:Power1.easeInOut})
@@ -281,7 +279,7 @@ function transitions() {
         .to('.project-preview__image', 1, {opacity:0, y:200, ease:Power3.easeIn})
         .staggerTo($item.not('.project-preview__image'), 0.6, {opacity:0, x:-50, ease:Power3.easeIn, stagger: {amount: 0.4 ,from:'end'}}, 0, '-=1')
       backExitAnimationMobile = new TimelineMax({paused: true})
-        .staggerTo($item, 0.7, {opacity:0, x:100, ease:Power3.easeIn, stagger: {amount: 0.3, from:'end'}})
+        .staggerTo($item, 0.75, {opacity:0, x:100, ease:Power3.easeIn, stagger: {amount: 0.25, from:'end'}})
     } 
     else if(pageId=='project1') {
       parralaxProject();
@@ -344,7 +342,6 @@ function transitions() {
 
     enterAnimation.play();
     enterAnimation.eventCallback("onStart", function(){
-      curentLabel();
       if(firstAnimation==true) {
         $pageContainer.css('visibility', 'visible');
         $header.css('visibility', 'visible');
@@ -356,6 +353,11 @@ function transitions() {
       } 
       else {
         logoToggle('show')
+        if($barbaContainer.hasAttr('data-label')) {
+          if(labelVisible==false) {
+            labelToggle('show');
+          }
+        }
         if($barbaContainer.hasAttr('data-project')) {
         } else {
           if(pageId == 'projectPreview') {
@@ -387,7 +389,9 @@ function transitions() {
 
     exitAnimation.play();
     exitAnimation.eventCallback("onStart", function(){
-
+      if($barbaContainer.hasAttr('data-label')) {
+        labelToggle('hide');
+      }
     });
     exitAnimation.eventCallback("onComplete", function(){
       animationTime=0;
@@ -513,6 +517,12 @@ function siteNavEvents() {
         } else if(swipeBack == true) {
           animationDirection = 'back';
         }
+        if(pageId=='projectPreview') {
+          labelHideAnimation.play(animationTime);
+          labelHideAnimation.eventCallback("onComplete", function(){ 
+            labelVisible=false;
+          });
+        }
         swipeForward = false;
         swipeBack = false;
       }
@@ -582,10 +592,10 @@ function siteNavEvents() {
         }
 
         if(swipeForward == true) {
-          forwardExitAnimation.play(animationTime, false);
+          forwardExitAnimation.play(animationTime);
           forwardExitAnimation.stop();
         } else if(swipeBack == true) {
-          backExitAnimation.play(animationTime, false);
+          backExitAnimation.play(animationTime);
           backExitAnimation.stop();
           if(pageId=='categories') {
             logoHideAnimation.play(animationTime);
@@ -595,10 +605,10 @@ function siteNavEvents() {
 
         if(!(pageOrder==0 && swipeBack==true) && !(pageOrder == pagesCount-1 && swipeForward==true)) {
           if(pageId=='projectPreview') {
-            labelHideAnimation.play(animationTime, false);
+            labelHideAnimation.play(animationTime);
             labelHideAnimation.stop();
           }
-          animationStartLoading.play(animationTime, false);
+          animationStartLoading.play(animationTime);
           animationStartLoading.stop();
         }
       }
@@ -668,7 +678,8 @@ $document.on('click', '.ajax-link', function(e) {
     }
   } else if($link.hasClass('project-link')) {
   }
-  //labels
+
+  /* //labels
   if(dataOldLabel !== false) {
     if($link.attr('data-label')) {
       if(dataOldLabel !== $link.data('label')) {
@@ -679,7 +690,7 @@ $document.on('click', '.ajax-link', function(e) {
       dataOldLabel = false;
       dataNewLabel = false;
     }
-  }
+  } */
 })
 
 function paginationPreloader() {
@@ -687,20 +698,22 @@ function paginationPreloader() {
       x, y,
       repeatCount = 0,
       minLoaderRepeat = 2,
-      loadedP = false,
-      loadingFlag = false,
-      animationLoadingEnd;
+      loadFlag = false,
+      animationLoadingEnd,
+      preloaderShowAnimation;
 
   preloaderHideAnimation = new TimelineMax({paused:true})
-      .to('.pagination', 1, {autoAlpha:0, ease:Power3.easeOut})
+    .to('.pagination', 1, {autoAlpha:0, ease:Power3.easeOut})
+  preloaderShowAnimation = new TimelineMax({paused:true})
+    .to('.pagination', 1.5, {autoAlpha:1, ease:Power1.easeInOut})
 
-  function getParams() {
+  function getPaginationParams() {
     $item = $('.pagination__item').eq(pageOrder);
     y = ($item.offset().top - $('.pagination').offset().top)*1.43;
     x = ($item.offset().left - $('.pagination').offset().left)*1.43;
     repeatCount = 0;
   }
-  function getAnimations() {
+  function getPaginationAnimations() {
     if(pageW>1024) {
       animationStartLoading = new TimelineMax({paused:true})
         .set('.pagination', {css:{'overflow': 'hidden'}})
@@ -712,16 +725,30 @@ function paginationPreloader() {
         .to('.pagination', 0.6, {scale:0.7, ease: Power3.easeIn}, '-=0.6')
         .to('.pagination .dot', 0.6, {autoAlpha:0, ease:Power3.easeOut}, '-=0.6')
         .to('.pagination__bg', 0.6, {autoAlpha: 1, ease:Power3.easeIn}, '-=0.6')
-      animationLoadingEnd = new TimelineMax({paused:true})
-        .to('.pagination__loader', 0.9, {y:y, ease:Power3.easeInOut})
-        .to('.pagination__loader', 0.9, {css:{'height':'8px'}, ease:Power3.easeInOut}, '-=0.9')
-        .to('.pagination', 0.9, {scale:1, ease:Power3.easeInOut}, '-=0.9')
-        .to('.pagination__bg', 0.9, {autoAlpha: 0, ease:Power3.easeInOut}, '-=0.9')
-        .to('.pagination .dot', 0.9, {autoAlpha:1, ease:Power3.easeInOut}, '-=0.9')
-        .set('.pagination__loader', {autoAlpha: 0})
-        .set('a', {css:{'pointer-events': 'all'}})
-        .set($item.find('.pagination__link'), {css:{'pointer-events': 'none'}})    
-        .set('.pagination', {css:{'overflow': 'visible'}})
+
+      if(preloaderPosCenter==true) {
+        animationLoadingEnd = new TimelineMax({paused:true})
+          .to('.pagination__loader', 1.5, {y:y, ease:Power3.easeInOut})
+          .to('.pagination__loader', 1.5, {css:{'height':'8px'}, ease:Power3.easeInOut}, '-=1.5')
+          .to('.pagination', 1.5, {scale:1, ease:Power3.easeInOut}, '-=1.5')
+          .to('.pagination__bg', 1.5, {autoAlpha: 0, ease:Power3.easeInOut}, '-=1.5')
+          .to('.pagination .dot', 1.5, {autoAlpha:1, ease:Power3.easeInOut}, '-=1.5')
+          .set('.pagination__loader', {autoAlpha: 0})
+          .set('a', {css:{'pointer-events': 'all'}})
+          .set($item.find('.pagination__link'), {css:{'pointer-events': 'none'}})    
+          .set('.pagination', {css:{'overflow': 'visible'}})
+      } else {
+        animationLoadingEnd = new TimelineMax({paused:true})
+          .to('.pagination__loader', 0.9, {y:y, ease:Power3.easeInOut})
+          .to('.pagination__loader', 0.9, {css:{'height':'8px'}, ease:Power3.easeInOut}, '-=0.9')
+          .to('.pagination', 0.9, {scale:1, ease:Power3.easeInOut}, '-=0.9')
+          .to('.pagination__bg', 0.9, {autoAlpha: 0, ease:Power3.easeInOut}, '-=0.9')
+          .to('.pagination .dot', 0.9, {autoAlpha:1, ease:Power3.easeInOut}, '-=0.9')
+          .set('.pagination__loader', {autoAlpha: 0})
+          .set('a', {css:{'pointer-events': 'all'}})
+          .set($item.find('.pagination__link'), {css:{'pointer-events': 'none'}})    
+          .set('.pagination', {css:{'overflow': 'visible'}})
+      }
     } else {
       animationStartLoading = new TimelineMax({paused:true})
         .set('.pagination', {css:{'overflow': 'hidden'}})
@@ -733,31 +760,42 @@ function paginationPreloader() {
         .to('.pagination', 0.6, {scale:0.7, ease:Power3.easeIn}, '-=0.6')
         .to('.pagination .dot', 0.6, {autoAlpha:0, ease:Power3.easeOut}, '-=0.6')
         .to('.pagination__bg', 0.6, {autoAlpha: 1, ease:Power3.easeIn}, '-=0.6')
-      animationLoadingEnd = new TimelineMax({paused:true})
-        .to('.pagination__loader', 0.9, {x:x, ease:Power3.easeInOut})
-        .to('.pagination__loader', 0.9, {css:{'width':'8px'}, ease:Power3.easeInOut}, '-=0.9')
-        .to('.pagination', 0.9, {scale:1, ease:Power3.easeInOut}, '-=0.9')
-        .to('.pagination__bg', 0.9, {autoAlpha: 0, ease:Power3.easeInOut}, '-=0.9')
-        .to('.pagination .dot', 0.9, {autoAlpha:1, ease:Power3.easeInOut}, '-=0.9')
-        .set('.pagination__loader', {autoAlpha: 0})
-        .set('a', {css:{'pointer-events': 'all'}})
-        .set($item.find('.pagination__link'), {css:{'pointer-events': 'none'}})    
-        .set('.pagination', {css:{'overflow': 'visible'}})
+
+      if(preloaderPosCenter==true) {
+        animationLoadingEnd = new TimelineMax({paused:true})
+          .to('.pagination__loader', 1.5, {x:x, ease:Power3.easeInOut})
+          .to('.pagination__loader', 1.5, {css:{'width':'8px'}, ease:Power3.easeInOut}, '-=1.5')
+          .to('.pagination', 1.5, {scale:1, ease:Power3.easeInOut}, '-=1.5')
+          .to('.pagination__bg', 1.5, {autoAlpha: 0, ease:Power3.easeInOut}, '-=1.5')
+          .to('.pagination .dot', 1.5, {autoAlpha:1, ease:Power3.easeInOut}, '-=1.5')
+          .set('.pagination__loader', {autoAlpha: 0})
+          .set('a', {css:{'pointer-events': 'all'}})
+          .set($item.find('.pagination__link'), {css:{'pointer-events': 'none'}})    
+          .set('.pagination', {css:{'overflow': 'visible'}})
+      } else {
+        animationLoadingEnd = new TimelineMax({paused:true})
+          .to('.pagination__loader', 0.9, {x:x, ease:Power3.easeInOut})
+          .to('.pagination__loader', 0.9, {css:{'width':'8px'}, ease:Power3.easeInOut}, '-=0.9')
+          .to('.pagination', 0.9, {scale:1, ease:Power3.easeInOut}, '-=0.9')
+          .to('.pagination__bg', 0.9, {autoAlpha: 0, ease:Power3.easeInOut}, '-=0.9')
+          .to('.pagination .dot', 0.9, {autoAlpha:1, ease:Power3.easeInOut}, '-=0.9')
+          .set('.pagination__loader', {autoAlpha: 0})
+          .set('a', {css:{'pointer-events': 'all'}})
+          .set($item.find('.pagination__link'), {css:{'pointer-events': 'none'}})    
+          .set('.pagination', {css:{'overflow': 'visible'}})
+      }
     }
     animationStartLoading.eventCallback("onComplete", function() {
-      if(loadingFlag == false) {
-        $item.find('.pagination__link').removeClass('active');
-        loading();
-      }
+      $item.find('.pagination__link').removeClass('active');
+      loading();
     });
     animationLoadingEnd.eventCallback("onStart", function() {
       $item.find('.pagination__link').addClass('active');
     });
   }
   function loading() {
-    loadingFlag = true;
     let animationLoadingFrom,
-        animationLoadingTo;
+    animationLoadingTo;
     if(pageW>1024) {
       animationLoadingFrom = new TimelineMax({paused: true})
         .to('.pagination__loader', 0.5, {yPercent:100, ease:Power3.easeIn})
@@ -769,74 +807,77 @@ function paginationPreloader() {
       animationLoadingTo = new TimelineMax({paused: true})
         .fromTo('.pagination__loader', 0.5, {xPercent:-100, immediateRender: false}, {xPercent:0, ease:Power3.easeOut})
     }
+
     animationLoadingFrom.play();
     animationLoadingFrom.eventCallback("onComplete", function() {
       animationLoadingTo.play();
       if(pageLoaded==true && repeatCount>=minLoaderRepeat) {
-        let animationPosDefault;
-        loadedP = true;
+        loadFlag = true;
         pageLoaded = false;
         repeatCount = 0;
         minLoaderRepeat = 0;
         exitAnimationProgress = false;
         enterAnimationProgress = true;
-        setParams();
 
+        let animationPosDefault;
         if(pageW>1440) {
           animationPosDefault = new TimelineMax({paused: true})
-            .to('.pagination', 1, {y:-(preloaderY-10), x:-preloaderXright, ease: Power1.easeInOut});
+            .set('.pagination', {y:-(preloaderY-10), x:-preloaderXright, ease: Power1.easeInOut});
         } else if(pageW>1024) {
           animationPosDefault = new TimelineMax({paused: true})
-            .to('.pagination', 1, {y:-(preloaderY-15), x:-preloaderXright, ease: Power1.easeInOut});
+            .set('.pagination', {y:-(preloaderY-15), x:-preloaderXright, ease: Power1.easeInOut});
         } else {
           animationPosDefault = new TimelineMax({paused: true})
-            .to('.pagination', 1, {y:-preloaderYbottom, x:-preloaderX, ease: Power1.easeInOut});
+            .set('.pagination', {y:-preloaderYbottom, x:-preloaderX, ease: Power1.easeInOut});
         }
 
-        if(pageId=='main') {
-          preloaderHideAnimation.play();
+        updateGlobalParams('onComplete', function() {
+          repeatCount = 0;
+          getPaginationParams();
+          getPaginationAnimations();
+
           if(preloaderPosCenter == true) {
+            preloaderPosCenter = false;
+            preloaderHideAnimation.play();
             preloaderHideAnimation.eventCallback("onComplete", function() {
               transitions();
               animationPosDefault.play();
-              preloaderPosCenter = false;
+              animationLoadingEnd.play();
+              if(pageId!=='main') {
+                preloaderShowAnimation.restart();
+              }
             });
-          } else {
+          } 
+          else {
             transitions();
+            if(pageId=='main') {
+              preloaderHideAnimation.play();
+            }
+            setTimeout(function() {
+              animationLoadingEnd.play();
+            }, 500)
           }
-        } else {
-          transitions();
-          if(preloaderPosCenter == true) {
-            animationPosDefault.play();
-            preloaderPosCenter = false;
-          }
-        }
+        });
       } 
       else if(preloaderPosCenter==false) {
+        preloaderPosCenter = true;
         let animationPosCenter = new TimelineMax()
           .to('.pagination', 1, {y:-preloaderY, x:-preloaderX, ease: Power1.easeInOut});
-        animationPosCenter.play();
-        preloaderPosCenter = true;
       }
     });
+
     animationLoadingTo.eventCallback("onComplete", function() {
-      if(loadedP!==true) {
+      if(loadFlag==false) {
         repeatCount++;
         loading();
-      }
-      //завершение загрузки      
-      else {
-        loadedP = false;
-        loadingFlag = false;
-        getParams();
-        getAnimations();
-        animationLoadingEnd.play();
+      } else {
+        loadFlag = false;
       }
     });
   }
 
   //process
-  getParams();
+  getPaginationParams();
   if(firstAnimation==true) {
     let animationPosCenter = new TimelineMax({paused: true})
       .set('.pagination', {y:-preloaderY, x:-preloaderX, scale: 0.7})
@@ -852,7 +893,7 @@ function paginationPreloader() {
 $.fn.hasAttr = function(name) {  
   return this.attr(name) !== undefined;
 };
-function setParams() {
+function updateGlobalParams(event, func) {
   $container = $('.container_display-size');
   $inner = $('.container__inner');
   displayHeight = $('body').height();
@@ -868,45 +909,47 @@ function setParams() {
   preloaderX = pageW/2-preloaderW/2;
   preloaderXright = 31;
   preloaderYbottom = 20;
+
+  if($barbaContainer.hasAttr('data-label')) {
+    $Label = $('#' + $barbaContainer.data('label'));
+    let elHeight = $Label.height(),
+        elYpos = $inner.offset().top + innerH - elHeight,
+        setPosAnimation;
+    setPosAnimation = new TimelineMax().set($Label, {y: elYpos});
+  }
+
   $('.lazy').each(function() {
     imagesResize($(this))
   });
+
   if(enterAnimationProgress!==true) {
+    let tl = new TimelineMax();
     if(preloaderPosCenter == true) {
       console.log('setcenter')
-      var set = new TimelineMax()
-        .set('.pagination', {y:-preloaderY, x:-preloaderX});
+      tl.set('.pagination', {y:-preloaderY, x:-preloaderX});
     } else {
       if(pageW>1440) {
-        var set = new TimelineMax()
-          .set('.pagination', {y:-(preloaderY-10), x:-preloaderXright});
+        tl.set('.pagination', {y:-(preloaderY-10), x:-preloaderXright});
       } else if(pageW>1024) {
-        var set = new TimelineMax()
-          .set('.pagination', {y:-(preloaderY-15), x:-preloaderXright});
+        tl.set('.pagination', {y:-(preloaderY-15), x:-preloaderXright});
       } else {
-        var set = new TimelineMax()
-          .set('.pagination', {y:-preloaderYbottom, x:-preloaderX});
+        tl.set('.pagination', {y:-preloaderYbottom, x:-preloaderX});
       }
     }
   }
-  $label.each(function() {
-    var $el = $(this),
-        elHeight = $el.height(),
-        elYpos = $inner.offset().top + innerH - elHeight;
-    if(firstAnimation == true) {
-      var set = new TimelineMax().set($el, {y: elYpos});
-    } else {
-      var set = new TimelineMax().to($el, 1.5, {y: elYpos, ease: Power3.easeInOut});
-    }
-  })
+
   if(pageW<=768) {
     if(pageId=='projectPreview') {
-      var $t = $('.project-preview__description'),
-          lw = $('#' + dataNewLabel).width(),
+      let $t = $('.project-preview__description'),
+          lw = $Label.width(),
           mw = innerWidth-lw;
-
-      $t.css('max-width', mw)
+      console.log(innerWidth, lw, mw)
+      $t.css('max-width', mw);
     }
+  }
+  //caallbacks
+  if(event=='onComplete') {
+    func();
   }
 }
 function imagesResize(element) {
@@ -1207,50 +1250,29 @@ function logoToggle(state) {
     logoHideAnimation.play(animationTime);
   }
 }
-//labels
-function curentLabel() {
-  if($barbaContainer.hasAttr('data-label')) {
-    if($barbaContainer.hasAttr('data-project')) {
-      $label.find('.label-ind__container').css('background-color', '#fff');
-    } else {
-      $label.find('.label-ind__container').css('background-color', 'transparent');
-    }
-    //
-    dataNewLabel = $barbaContainer.data('label');
-    if(dataNewLabel !== dataOldLabel) {
-      if(dataOldLabel !== false) {
-        labelToggle(dataOldLabel, false);
-      }
-      labelToggle(dataNewLabel, true);
-    }
-  } else {
-    if(dataOldLabel !== false) {
-      labelToggle(dataOldLabel, false);
-      dataOldLabel = false;
-      dataNewLabel = false;
-    }
-  }
-}
-function labelToggle(dataLabel, state) {
-  var $el = $('#' + dataLabel);
-  
-  if(state == true) {
+function labelToggle(state) {
+  if(state=='show') {
     labelFadeAnimation = new TimelineMax()
-      .set($el, {autoAlpha: 1}).set($el, {css: {'z-index': '100'}})
-      .fromTo($el.find('.icon'), 1.5, {opacity: 0}, {opacity:1, ease:Power1.easeInOut})
-      .fromTo($el.find('.icon'), 1.5, {rotation:0}, {rotation:180, ease:Power3.easeOut}, '-=1.5')
-      .fromTo($el.find('.label-item__title'), 0.5, {opacity:0, y:15}, {opacity:1, y:0, ease:Power3.easeOut},'-=1')
-      .staggerFromTo($el.find('.letter'), 0.5, {opacity:0, y:5}, {opacity:1, y:0, ease:Power3.easeOut, stagger: {amount: 0.5}}, 0, '-=1')
+      .set($Label, {autoAlpha: 1}).set($Label, {css: {'z-index': '100'}})
+      .fromTo($Label.find('.icon'), 1.5, {opacity: 0}, {opacity:1, ease:Power1.easeInOut})
+      .fromTo($Label.find('.icon'), 1.5, {rotation:0}, {rotation:180, ease:Power3.easeOut}, '-=1.5')
+      .fromTo($Label.find('.label-item__title'), 0.5, {opacity:0, y:15}, {opacity:1, y:0, ease:Power3.easeOut},'-=1')
+      .staggerFromTo($Label.find('.letter'), 0.5, {opacity:0, y:5}, {opacity:1, y:0, ease:Power3.easeOut, stagger: {amount: 0.5}}, 0, '-=1')
     labelHideAnimation = new TimelineMax({paused: true})
-      .set($el, {css: {'z-index': '99'}})
-      .to($el.find('.icon'), 1, {opacity:0, rotation:0, ease:Power3.easeIn})
-      .to($el.find('.label-item__title'), 1, {opacity:0, y:15, ease:Power3.easeIn}, '-=1')
-      .set($el, {autoAlpha: 0})
-      
-    dataOldLabel = dataNewLabel;
+      .set($Label, {css: {'z-index': '99'}})
+      .to($Label.find('.icon'), 1, {opacity:0, rotation:360, ease:Power3.easeIn})
+      .to($Label.find('.label-item__title'), 1, {opacity:0, y:15, ease:Power3.easeIn}, '-=1')
+      .set($Label, {autoAlpha: 0})
+
+    labelFadeAnimation.eventCallback("onComplete", function(){
+      labelVisible=true;
+    });
   } 
-  else {
-    labelHideAnimation.play(animationTime)
+  else if(state=='hide') {
+    labelHideAnimation.play(animationTime);
+    labelHideAnimation.eventCallback("onComplete", function(){ 
+      labelVisible=false;
+    });
   }
 }
 function hoverAnimations() {
