@@ -122,7 +122,6 @@ function barba() {
     },
     //enter
     showNewPage: function() {
-      console.log('new')
       this.done();
       newPageLoading();
     }
@@ -457,7 +456,6 @@ function siteNavEvents() {
             this.x = cursorPos.current.x;
             this.y = cursorPos.current.y;
             if(callback=='onComplete') {
-              console.log(this);
               func();
             }
           }
@@ -640,11 +638,9 @@ function siteNavEvents() {
           }
         } else if(animationDirection == 'back') {
           if(pageOrder > 0) {
-            console.log('1')
             $link = $('.pagination__item').eq(pageOrder - 1).find('.pagination__link');
             goToPage();
           } else {
-            console.log('2')
             $link = $('.logo__link');
             goToPage();
           }
@@ -925,7 +921,6 @@ function updateGlobalParams(event, func) {
   if(enterAnimationProgress!==true) {
     let tl = new TimelineMax();
     if(preloaderPosCenter == true) {
-      console.log('setcenter')
       tl.set('.pagination', {y:-preloaderY, x:-preloaderX});
     } else {
       if(pageW>1440) {
@@ -942,8 +937,7 @@ function updateGlobalParams(event, func) {
     if(pageId=='projectPreview') {
       let $t = $('.project-preview__description'),
           lw = $Label.width(),
-          mw = innerWidth-lw;
-      console.log(innerWidth, lw, mw)
+          mw = innerW-lw;
       $t.css('max-width', mw);
     }
   }

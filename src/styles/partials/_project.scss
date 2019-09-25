@@ -300,6 +300,7 @@
     }
     &__image {
       width: 100%;
+      margin-bottom: 15px;
       height: auto;
       position: relative;
     }
@@ -312,9 +313,9 @@
     }
     &__title {
       font-size: 60px;
-      margin-top: 15px;
+      margin-top: 0;
       margin-left: 0;
-      margin-right: -0.08em;
+      margin-right: -0.07em;
     }
     &__demo {
       margin: 0;
@@ -325,7 +326,7 @@
     &__description {
       padding-left: 20px;
       margin-left: 0;
-      margin-right: -0.08em;
+      margin-right: -0.07em;
       br {
         display: none;
       }
@@ -357,7 +358,7 @@
 @media screen and(max-width:576px) {
   .project-preview {
     &__title {
-      font-size: 38px;
+      font-size: 30px;
     }
     &__line {
       max-width: 100px;
@@ -365,9 +366,6 @@
     }
   }
   .project {
-    &__text {
-
-    }
     &__description {
       margin-bottom: -0.15em;
     }
